@@ -1,11 +1,11 @@
 package bugBust.transitgo.controller;
 
 import bugBust.transitgo.model.BusMgt;
-import bugBust.transitgo.model.BusRoute;
-import bugBust.transitgo.model.BusStop;
 import bugBust.transitgo.repository.BusMgtRepository;
 import bugBust.transitgo.repository.BusRouteRepository;
+import bugBust.transitgo.services.BusMgtService;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,19 +21,22 @@ public class BusMgtController {
     @Autowired
     private BusRouteRepository busRouteRepository;
 
+@Autowired
+private BusMgtService busMgtService;
 
-    @PostMapping("/bus")
-    BusMgt newBus(@RequestBody BusMgt newBus){
-        return busmgtRepository.save(newBus);
+    @PostMapping("bus")
+    public ResponseEntity<BusMgt> addABus(@RequestBody BusMgt bus) {
+        return new ResponseEntity<BusMgt>(busMgtService.saveOrUpdateABus(bus), HttpStatus.CREATED);
     }
+
     @GetMapping("/buses")
-    List<BusMgt> getAllBuses(){
-        return busmgtRepository.findAll();
+    public Iterable<BusMgt> getAllBuses(){
+        return busMgtService.findAll();
     }
 
-    @GetMapping("/bus/{id}")
-    BusMgt getBusById(@PathVariable int id) {
-        return busmgtRepository.findById(id).orElseThrow();
+    @GetMapping("bus/{busId}")
+    public ResponseEntity<BusMgt> getBookingById(@PathVariable int busId) {
+        return new ResponseEntity<BusMgt>(busMgtService.findBusById(busId), HttpStatus.OK);
     }
     @PutMapping("/bus/{id}")
     BusMgt updateBus(@RequestBody BusMgt newBus, @PathVariable int id) {
