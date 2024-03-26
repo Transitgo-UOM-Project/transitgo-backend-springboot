@@ -51,9 +51,7 @@ private BusMgtService busMgtService;
 
     @DeleteMapping("/bus/{id}")
     String deleteBus(@PathVariable int id){
-//        if(!busmgtRepository.existsById(id)){
-//            throw new UserNotFoundException(id);
-//        }
+
         busmgtRepository.deleteById(id);
         return  "User with id "+id+" has been deleted success.";
     }
