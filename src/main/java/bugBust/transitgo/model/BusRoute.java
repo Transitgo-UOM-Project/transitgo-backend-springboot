@@ -1,8 +1,8 @@
 package bugBust.transitgo.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class BusRoute {
@@ -18,6 +18,9 @@ public class BusRoute {
     public void setId(Long id) {
         this.id = id;
     }
+
+    @OneToMany
+    private List<BusStops> busStops;
 
     public String getRouteno() {
         return routeno;

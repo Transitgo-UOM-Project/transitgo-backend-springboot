@@ -3,7 +3,10 @@ package bugBust.transitgo.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -15,6 +18,27 @@ public class User {
     private String username;
     private String name;
     private String email;
+
+    public USER_ROLE getRole() {
+        return role;
+    }
+
+    public void setRole(USER_ROLE role) {
+        this.role = role;
+    }
+
+//    public List<Announcement> getAnnouncements() {
+//        return announcements;
+//    }
+//
+//    public void setAnnouncements(List<Announcement> announcements) {
+//        this.announcements = announcements;
+//    }
+
+    private USER_ROLE role;
+
+//    @OneToMany
+//    private List<Announcement> announcements = new ArrayList<>();
 
     public Long getId() {
         return id;
