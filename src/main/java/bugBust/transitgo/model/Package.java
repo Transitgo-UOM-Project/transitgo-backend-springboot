@@ -1,8 +1,10 @@
-package com.transitgo.transferPackage.model;
+package bugBust.transitgo.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+
+import java.time.LocalDate;
 
 @Entity
 public class Package {
@@ -10,7 +12,11 @@ public class Package {
     @Id
     @GeneratedValue
     private Long PackageID;
+
+
+
     private String BusID;
+    private LocalDate ReceivedDate;
     private String Start;
     private String Destination;
     private String ReceiverName;
@@ -86,6 +92,13 @@ public class Package {
 
     public void setStatus(String status) {
         Status = status;
+    }
+    public LocalDate getReceivedDate() {
+        return ReceivedDate;
+    }
+
+    public void setReceivedDate(LocalDate receivedDate) {
+        ReceivedDate = receivedDate;
     }
 
     private String ReceiverContact;
