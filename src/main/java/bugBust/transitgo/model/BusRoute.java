@@ -1,29 +1,31 @@
 package bugBust.transitgo.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class BusRoute {
-@Id
-@GeneratedValue
-    private Long id;
-    private String routeno;
 
-    public Long getId() {
-        return id;
-    }
+    @Id
+    @Column(name="routeno")
+    private int routeno;
+    private String routename;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public String getRouteno() {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "busroute", fetch = FetchType.LAZY)
+    private List <BusMgt> buses;
+
+
+
+
+
+    public int getRouteno() {
         return routeno;
     }
 
-    public void setRouteno(String routeno) {
+    public void setRouteno(int routeno) {
         this.routeno = routeno;
     }
 
@@ -35,7 +37,12 @@ public class BusRoute {
         this.routename = routename;
     }
 
-    private String routename;
+    @JsonManagedReference
+    public List<BusMgt> getBuses() {
+        return buses;
+    }
 
-
+    public void setBuses(List<BusMgt> buses) {
+        this.buses = buses;
+    }
 }
