@@ -15,7 +15,7 @@ public class BusMgt {
     @ManyToOne
     @JoinColumn(name = "routeno")
     private BusRoute busroute;
-@JsonBackReference
+    @JsonBackReference
     public BusRoute getBusroute() {
         return busroute;
     }

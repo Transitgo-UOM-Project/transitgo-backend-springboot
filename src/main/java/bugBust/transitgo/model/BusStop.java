@@ -1,22 +1,34 @@
 package bugBust.transitgo.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
 public class BusStop {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long stopID;
+    private int stopID;
 
     private String name;
 
+    @ManyToOne
+    @JoinColumn(name = "routeno")
+    private BusRoute busroute;
 
+    @JsonBackReference
+    public BusRoute getBusroute() {
+        return busroute;
+    }
 
-    public Long getStopID() {
+    public void setBusroute(BusRoute busroute) {
+        this.busroute = busroute;
+    }
+
+    public int getStopID() {
         return stopID;
     }
 
-    public void setStopID(Long stopID) {
+    public void setStopID(int stopID) {
         this.stopID = stopID;
     }
 

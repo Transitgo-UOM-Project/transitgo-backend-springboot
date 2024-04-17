@@ -1,11 +1,12 @@
 package bugBust.transitgo.controller;
 
 
-
-
 import bugBust.transitgo.model.BusStop;
 import bugBust.transitgo.repository.BusStopRepository;
+import bugBust.transitgo.services.BusStopService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,23 +17,27 @@ public class BusStopController {
     @Autowired
     private BusStopRepository busstopRepository;
 
+    @Autowired
+    private BusStopService busStopService;
 
 
-    @PostMapping("/busstop")
-    BusStop newBusStop(@RequestBody BusStop newBusStop){
-        return busstopRepository.save(newBusStop);
+    @PostMapping("busstop")
+    public ResponseEntity<BusStop> addABusstop(@RequestBody BusStop busstop) {
+        return new ResponseEntity<BusStop>(busStopService.saveOrUpdateABusStop(busstop), HttpStatus.CREATED);
     }
+
     @GetMapping("/busstops")
-    List<BusStop> getAllBusStops(){
-        return busstopRepository.findAll();
+    public Iterable<BusStop> getAllBuses(){
+        return busStopService.findAll();
     }
 
-    @GetMapping("/busstop/{id}")
-    BusStop getBusStopById(@PathVariable Long id) {
-        return busstopRepository.findById(id).orElseThrow();
+    @GetMapping("busstop/{busId}")
+    public ResponseEntity<BusStop> getBookingById(@PathVariable int busId) {
+        return new ResponseEntity<BusStop>(busStopService.findBusStopById(busId), HttpStatus.OK);
     }
+
     @PutMapping("/busstop/{id}")
-    BusStop updateBusStop(@RequestBody BusStop newBusStop, @PathVariable Long id) {
+    BusStop updateBusStop(@RequestBody BusStop newBusStop, @PathVariable int id) {
         return busstopRepository.findById(id)
                 .map(busStop -> {
                     busStop.setStopID(newBusStop.getStopID());
@@ -43,7 +48,7 @@ public class BusStopController {
     }
 
     @DeleteMapping("/busstop/{id}")
-    String deleteBusStop(@PathVariable Long id){
+    String deleteBusStop(@PathVariable int id){
 //        if(!busstopRepository.existsById(id)){
 //            throw new UserNotFoundException(id);
 //        }
