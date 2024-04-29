@@ -22,4 +22,19 @@ public class BusRouteService {
     public Iterable<BusRoute> findAll() {
         return busRouteRepository.findAll();
     }
+
+    public BusRoute updateBusRoute(int busRouteNo, BusRoute updatedBusRoute) {
+        BusRoute existingBusRoute = findBusRouteByNo(busRouteNo);
+        if (existingBusRoute != null) {
+            // Update the existing BusRoute with the data from updatedBusRoute
+            existingBusRoute.setBusStops(updatedBusRoute.getBusStops());
+            // Update other properties as needed
+
+            // Save the updated BusRoute
+            return busRouteRepository.save(existingBusRoute);
+        } else {
+            // Handle the case where the BusRoute with the given number doesn't exist
+            return null;
+        }
+    }
 }

@@ -10,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
@@ -34,10 +32,12 @@ private BusMgtService busMgtService;
         return busMgtService.findAll();
     }
 
-    @GetMapping("bus/{busId}")
-    public ResponseEntity<BusMgt> getBookingById(@PathVariable int busId) {
-        return new ResponseEntity<BusMgt>(busMgtService.findBusById(busId), HttpStatus.OK);
+
+    @GetMapping("bus/{busid}")
+    public ResponseEntity<BusMgt> getBusById(@PathVariable int busid) {
+        return new ResponseEntity<BusMgt>(busMgtService.findBusById(busid), HttpStatus.OK);
     }
+
     @PutMapping("/bus/{id}")
     BusMgt updateBus(@RequestBody BusMgt newBus, @PathVariable int id) {
         return busmgtRepository.findById(id)
@@ -56,6 +56,6 @@ private BusMgtService busMgtService;
         return  "User with id "+id+" has been deleted success.";
     }
 
-//
+
 
 }
