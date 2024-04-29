@@ -15,7 +15,7 @@ public class BusMgtService {
     }
 
     public BusMgt findBusById(int Id) {
-        return busmgtRepository.getById(Id);
+        return busmgtRepository.getByid(Id);
     }
 
     public Iterable<BusMgt> findAll() {

@@ -1,15 +1,65 @@
 package bugBust.transitgo.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
+
+import java.time.LocalTime;
 
 @Entity
+
 public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int ScheduleId;
+    private int scheduleId;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "bus_id")
+    private BusMgt bus;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "stop_id")
+    private BusStop busStop;
+
+    private LocalTime arrivalTime;
+    private LocalTime departureTime;
+
+    public int getScheduleId() {
+        return scheduleId;
+    }
+
+    public void setScheduleId(int scheduleId) {
+        this.scheduleId = scheduleId;
+    }
+
+    public BusMgt getBus() {
+        return bus;
+    }
+
+    public void setBus(BusMgt bus) {
+        this.bus = bus;
+    }
+
+    public BusStop getBusStop() {
+        return busStop;
+    }
+
+    public void setBusStop(BusStop busStop) {
+        this.busStop = busStop;
+    }
+
+    public LocalTime getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public void setArrivalTime(LocalTime arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
+
+    public LocalTime getDepartureTime() {
+        return departureTime;
+    }
+
+    public void setDepartureTime(LocalTime departureTime) {
+        this.departureTime = departureTime;
+    }
 }

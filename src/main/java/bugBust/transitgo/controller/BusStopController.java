@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+
 
 @RestController
 @CrossOrigin("http://localhost:3000")
@@ -31,9 +31,9 @@ public class BusStopController {
         return busStopService.findAll();
     }
 
-    @GetMapping("busstop/{busId}")
-    public ResponseEntity<BusStop> getBookingById(@PathVariable int busId) {
-        return new ResponseEntity<BusStop>(busStopService.findBusStopById(busId), HttpStatus.OK);
+    @GetMapping("busstop/{busstopId}")
+    public ResponseEntity<BusStop> getBookingById(@PathVariable int busstopId) {
+        return new ResponseEntity<BusStop>(busStopService.findBusStopById(busstopId), HttpStatus.OK);
     }
 
     @PutMapping("/busstop/{id}")
