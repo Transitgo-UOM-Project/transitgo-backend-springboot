@@ -1,7 +1,12 @@
+//BusMgt.java
+
 package bugBust.transitgo.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class BusMgt {
@@ -15,10 +20,31 @@ public class BusMgt {
     @ManyToOne
     @JoinColumn(name = "routeno")
     private BusRoute busroute;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bus", fetch = FetchType.LAZY)
+    private List<Schedule> schedules;
+
+    @JsonManagedReference
+    public List<Schedule> getSchedules() {
+        return schedules;
+    }
+
+    public void setSchedules(List<Schedule> schedules) {
+        this.schedules = schedules;
+    }
+
     @JsonBackReference
     public BusRoute getBusroute() {
         return busroute;
     }
+
+
+    public int getRouteNo(){
+        return busroute.getRouteno();
+    }
+
+
+
 
     public void setBusroute(BusRoute busroute) {
         this.busroute = busroute;

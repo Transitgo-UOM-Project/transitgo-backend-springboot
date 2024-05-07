@@ -1,6 +1,8 @@
 package bugBust.transitgo.controller;
 
+import bugBust.transitgo.model.BusMgt;
 import bugBust.transitgo.model.Schedule;
+import bugBust.transitgo.repository.ScheduleRepository;
 import bugBust.transitgo.services.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,7 +12,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @CrossOrigin("http://localhost:3000")
 public class ScheduleController {
-
+    @Autowired
+private ScheduleRepository scheduleRepository;
     @Autowired
     private ScheduleService scheduleService;
 
@@ -20,7 +23,7 @@ public class ScheduleController {
         return new ResponseEntity<>(createdSchedule, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("schedule/{id}")
     public ResponseEntity<Schedule> getScheduleById(@PathVariable("id") int id) {
         Schedule schedule = scheduleService.findScheduleById(id);
         if (schedule != null) {
@@ -35,4 +38,16 @@ public class ScheduleController {
         Iterable<Schedule> schedules = scheduleService.findAll();
         return new ResponseEntity<>(schedules, HttpStatus.OK);
     }
+
+    @PutMapping("/schedule/{id}")
+    Schedule updateSchedule(@RequestBody Schedule newSchedule, @PathVariable int id) {
+        return scheduleRepository.findById(id)
+                .map(schedule -> {
+                    schedule.setArrivalTime(newSchedule.getArrivalTime());
+                    schedule.setDepartureTime(newSchedule.getDepartureTime());
+                    return scheduleRepository.save(schedule);
+                })
+                .orElseThrow(() -> new RuntimeException("Schedule not found"));
+    }
+
 }
