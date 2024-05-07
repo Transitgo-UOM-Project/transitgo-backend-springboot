@@ -1,3 +1,5 @@
+//Schedule.java
+
 package bugBust.transitgo.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -31,6 +33,8 @@ public class Schedule {
         this.scheduleId = scheduleId;
     }
 
+
+    @JsonBackReference
     public BusMgt getBus() {
         return bus;
     }

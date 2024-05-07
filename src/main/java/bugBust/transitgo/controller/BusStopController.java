@@ -40,7 +40,7 @@ public class BusStopController {
     BusStop updateBusStop(@RequestBody BusStop newBusStop, @PathVariable int id) {
         return busstopRepository.findById(id)
                 .map(busStop -> {
-                    busStop.setStopID(newBusStop.getStopID());
+
                     busStop.setName(newBusStop.getName());
 
                     return busstopRepository.save(busStop);
