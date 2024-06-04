@@ -22,8 +22,20 @@ public class Schedule {
     @JoinColumn(name = "stop_id")
     private BusStop busStop;
 
+    private String direction; // Add this field
+
+    public String getDirection() {
+        return direction;
+    }
+
+    public void setDirection(String direction) {
+        this.direction = direction;
+    }
+
     private LocalTime arrivalTime;
     private LocalTime departureTime;
+
+
 
     public int getScheduleId() {
         return scheduleId;
