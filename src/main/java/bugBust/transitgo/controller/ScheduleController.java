@@ -1,3 +1,4 @@
+//ScheduleController.java
 package bugBust.transitgo.controller;
 
 import bugBust.transitgo.model.BusMgt;
@@ -49,5 +50,7 @@ private ScheduleRepository scheduleRepository;
                 })
                 .orElseThrow(() -> new RuntimeException("Schedule not found"));
     }
+
+
 
 }
