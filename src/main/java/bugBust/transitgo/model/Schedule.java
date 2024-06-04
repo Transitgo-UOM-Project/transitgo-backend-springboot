@@ -1,10 +1,8 @@
 //Schedule.java
-
 package bugBust.transitgo.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-
 import java.time.LocalTime;
 
 @Entity

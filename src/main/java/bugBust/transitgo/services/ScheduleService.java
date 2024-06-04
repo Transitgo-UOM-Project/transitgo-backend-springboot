@@ -1,7 +1,6 @@
 //ScheduleService.java
 package bugBust.transitgo.services;
 
-
 import bugBust.transitgo.model.Schedule;
 import bugBust.transitgo.repository.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;

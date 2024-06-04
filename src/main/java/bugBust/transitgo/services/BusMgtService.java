@@ -1,11 +1,7 @@
 //BusMgtService.java
-
 package bugBust.transitgo.services;
 
 import bugBust.transitgo.model.BusMgt;
-import bugBust.transitgo.model.BusRoute;
-import bugBust.transitgo.model.BusStop;
-import bugBust.transitgo.model.Schedule;
 import bugBust.transitgo.repository.BusMgtRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
