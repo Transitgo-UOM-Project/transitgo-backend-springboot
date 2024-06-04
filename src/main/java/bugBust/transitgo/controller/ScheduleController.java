@@ -1,7 +1,6 @@
 //ScheduleController.java
 package bugBust.transitgo.controller;
 
-import bugBust.transitgo.model.BusMgt;
 import bugBust.transitgo.model.Schedule;
 import bugBust.transitgo.repository.ScheduleRepository;
 import bugBust.transitgo.services.ScheduleService;
