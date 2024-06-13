@@ -4,6 +4,7 @@ package bugBust.transitgo.services;
 import bugBust.transitgo.model.BusRoute;
 import bugBust.transitgo.model.BusStop;
 import bugBust.transitgo.repository.BusRouteRepository;
+import bugBust.transitgo.repository.BusStopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,9 @@ public class BusRouteService {
 
     @Autowired
     private BusRouteRepository busRouteRepository;
+
+    @Autowired
+    private BusStopRepository busStopRepository;
 
     public BusRoute saveOrUpdateABusRoute(BusRoute busRoute) {
         return busRouteRepository.save(busRoute);
@@ -45,7 +49,8 @@ public class BusRouteService {
                     if (existingBusStop.getStopID() == updatedBusStop.getStopID()) {
                         // Update existing bus stop with data from updated bus stop
                         existingBusStop.setName(updatedBusStop.getName());
-                        // Update other properties as needed
+                        // Update bus stop orderIndex
+                        existingBusStop.setOrderIndex(updatedBusStop.getOrderIndex());
                         found = true;
                         break;
                     }
@@ -67,4 +72,17 @@ public class BusRouteService {
         }
     }
 
+//    public void addBusStopBetween(String routeName, String newStopName, int afterStopOrderIndex) {
+//        BusRoute busRoute = busRouteRepository.findByRoutename(routeName);
+//        List<BusStop> busStops = busRoute.getBusStops();
+//
+//        // Increment orderIndex of all bus stops after the specified index
+//        for (BusStop busStop : busStops) {
+//            if (busStop.getOrderIndex() > afterStopOrderIndex) {
+//                busStop.setOrderIndex(busStop.getOrderIndex() + 1);
+//                busStopRepository.save(busStop);
+//            }
+//        }
+//
+//}
 }
