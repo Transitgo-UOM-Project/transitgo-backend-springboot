@@ -6,14 +6,19 @@ import bugBust.transitgo.model.Schedule;
 import bugBust.transitgo.repository.BusMgtRepository;
 import bugBust.transitgo.repository.BusRouteRepository;
 import bugBust.transitgo.repository.ScheduleRepository;
+import bugBust.transitgo.scheduledTask.BusStatusUpdateTask;
 import bugBust.transitgo.services.BusMgtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Objects;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
@@ -27,6 +32,9 @@ public class BusMgtController {
     @Autowired
     private BusMgtService busMgtService;
 
+    private BusStatusUpdateTask busStatusUpdateTask;
+
+    private static final Logger logger = LoggerFactory.getLogger(BusMgtService.class);
     @PostMapping("bus")
     public ResponseEntity<BusMgt> addABus(@RequestBody BusMgt bus) {
         return new ResponseEntity<BusMgt>(busMgtService.saveOrUpdateABus(bus), HttpStatus.CREATED);
@@ -55,15 +63,6 @@ public class BusMgtController {
                 .map(bus -> {
                     // Update the bus details
 
-//                    // Check if the bus route has changed
-//                    if (!Objects.equals(bus.getRouteNo(), newBus.getRouteNo())) {
-//                        // Retrieve existing schedules associated with the bus
-//                        List<Schedule> existingSchedules = scheduleRepository.findScheduleByBusId(busid);
-//                        // Delete existing schedules
-//                        scheduleRepository.deleteAll(existingSchedules);
-//
-//                        // Add new schedules
-//                    }
                     bus.setRegNo(newBus.getRegNo());
               bus.setBusroute(newBus.getBusroute());
 
@@ -76,27 +75,19 @@ public class BusMgtController {
     BusMgt updateBusStatus(@RequestBody BusMgt newBus, @PathVariable int busid) {
         return busmgtRepository.findById(busid)
                 .map(bus -> {
-                    // Update the bus details
-
-//                    // Check if the bus route has changed
-//                    if (!Objects.equals(bus.getRouteNo(), newBus.getRouteNo())) {
-//                        // Retrieve existing schedules associated with the bus
-//                        List<Schedule> existingSchedules = scheduleRepository.findScheduleByBusId(busid);
-//                        // Delete existing schedules
-//                        scheduleRepository.deleteAll(existingSchedules);
-//
-//                        // Add new schedules
-//                    }
-//                    bus.setRegNo(newBus.getRegNo());
-//                    bus.setBusroute(newBus.getBusroute());
+                    // Update the bus status details
+                         String oldStatus = bus.getStatus();
                     bus.setStatus(newBus.getStatus());
-
+                    logger.info("status of {} changed from {} to {}" , bus.getRegNo(),oldStatus, newBus.getStatus());
                     // Save and return the updated bus
                     return busmgtRepository.save(bus);
                 })
                 .orElseThrow(() -> new IllegalArgumentException("Bus not found with id: " + busid));
     }
 
+    public BusMgtController(BusStatusUpdateTask busStatusUpdateTask) {
+        this.busStatusUpdateTask = busStatusUpdateTask;
+    }
     @DeleteMapping("/bus/{id}")
     String deleteBus(@PathVariable int id) {
         busmgtRepository.deleteById(id);
