@@ -16,6 +16,16 @@ public class BusStop {
     @JoinColumn(name = "routeno")
     private BusRoute busroute;
 
+    private int orderIndex;
+
+    public int getOrderIndex() {
+        return orderIndex;
+    }
+
+    public void setOrderIndex(int orderIndex) {
+        this.orderIndex = orderIndex;
+    }
+
     @JsonBackReference
     public BusRoute getBusroute() {
         return busroute;

@@ -55,17 +55,41 @@ public class BusMgtController {
                 .map(bus -> {
                     // Update the bus details
 
-                    // Check if the bus route has changed
-                    if (!Objects.equals(bus.getRouteNo(), newBus.getRouteNo())) {
-                        // Retrieve existing schedules associated with the bus
-                        List<Schedule> existingSchedules = scheduleRepository.findScheduleByBusId(busid);
-                        // Delete existing schedules
-                        scheduleRepository.deleteAll(existingSchedules);
-
-                        // Add new schedules
-                    }
+//                    // Check if the bus route has changed
+//                    if (!Objects.equals(bus.getRouteNo(), newBus.getRouteNo())) {
+//                        // Retrieve existing schedules associated with the bus
+//                        List<Schedule> existingSchedules = scheduleRepository.findScheduleByBusId(busid);
+//                        // Delete existing schedules
+//                        scheduleRepository.deleteAll(existingSchedules);
+//
+//                        // Add new schedules
+//                    }
                     bus.setRegNo(newBus.getRegNo());
-                    bus.setBusroute(newBus.getBusroute());
+              bus.setBusroute(newBus.getBusroute());
+
+                    // Save and return the updated bus
+                    return busmgtRepository.save(bus);
+                })
+                .orElseThrow(() -> new IllegalArgumentException("Bus not found with id: " + busid));
+    }
+    @PutMapping("/busStatus/{busid}")
+    BusMgt updateBusStatus(@RequestBody BusMgt newBus, @PathVariable int busid) {
+        return busmgtRepository.findById(busid)
+                .map(bus -> {
+                    // Update the bus details
+
+//                    // Check if the bus route has changed
+//                    if (!Objects.equals(bus.getRouteNo(), newBus.getRouteNo())) {
+//                        // Retrieve existing schedules associated with the bus
+//                        List<Schedule> existingSchedules = scheduleRepository.findScheduleByBusId(busid);
+//                        // Delete existing schedules
+//                        scheduleRepository.deleteAll(existingSchedules);
+//
+//                        // Add new schedules
+//                    }
+//                    bus.setRegNo(newBus.getRegNo());
+//                    bus.setBusroute(newBus.getBusroute());
+                    bus.setStatus(newBus.getStatus());
 
                     // Save and return the updated bus
                     return busmgtRepository.save(bus);
@@ -82,10 +106,16 @@ public class BusMgtController {
     @GetMapping("bus/search")
     public ResponseEntity<List<BusMgt>> searchBusSchedules(
             @RequestParam String from,
-            @RequestParam String to) {
-        List<BusMgt> buses = busMgtService.searchBusSchedules(from, to);
-        return ResponseEntity.ok(buses);
+            @RequestParam String to,
+            @RequestParam String direction) {
+        try {
+            List<BusMgt> buses = busMgtService.searchBusSchedules(from, to, direction);
+            return ResponseEntity.ok(buses);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
+
 
     @GetMapping("/bus/{busid}/stops")
     public ResponseEntity<List<Schedule>> getBusStopsAndTimes(@PathVariable int busid) {

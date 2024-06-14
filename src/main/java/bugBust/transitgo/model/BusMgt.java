@@ -16,6 +16,16 @@ public class BusMgt {
     @Column(unique = true)
     private String regNo;
 
+    private String status;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     @ManyToOne
     @JoinColumn(name = "routeno")
     private BusRoute busroute;

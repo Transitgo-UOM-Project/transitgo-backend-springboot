@@ -21,6 +21,8 @@ public class ScheduleService {
         return scheduleRepository.getByscheduleId(id);
     }
 
+
+
     public Iterable<Schedule> findAll() {
         return scheduleRepository.findAll();
     }

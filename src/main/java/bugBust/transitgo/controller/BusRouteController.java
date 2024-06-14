@@ -54,6 +54,11 @@ public class BusRouteController {
         return  "User with id "+id+" has been deleted success.";
     }
 
+//    @PostMapping("route/addStopBetween")
+//    public void addStopBetween(@RequestParam String routeName, @RequestParam String newStopName, @RequestParam int afterStopOrderIndex) {
+//        busRouteService.addBusStopBetween(routeName, newStopName, afterStopOrderIndex);
+//    }
+
 
 
 
