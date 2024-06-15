@@ -1,6 +1,6 @@
 package bugBust.transitgo.controller;
 
-
+import bugBust.transitgo.exception.PackageNotFoundException;
 import bugBust.transitgo.model.Package;
 import bugBust.transitgo.repository.PackageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,4 +24,36 @@ public class PackageController {
     List<Package> getAllPackages(){
         return packageRepository.findAll();
     }
+
+    @GetMapping("/package/{PackageID}")
+    Package getPackageById(@PathVariable Long PackageID){
+        return packageRepository.findById(PackageID)
+                .orElseThrow(()->new PackageNotFoundException(PackageID));
+    }
+
+    //Edite Status
+    @PutMapping("/package/{PackageID}")
+    Package updatePackage(@RequestBody Package newPackage,@PathVariable Long PackageID){
+        return packageRepository.findById(PackageID)
+                .map(aPackage ->{
+                    aPackage.setReceiverName(newPackage.getReceiverName());
+                    aPackage.setPayment(newPackage.getPayment());
+                    aPackage.setStatus(newPackage.getStatus());
+                    return packageRepository.save(aPackage);
+                }).orElseThrow(()->new PackageNotFoundException(PackageID));
+
+    }
+
+    //Delete data
+    @DeleteMapping("/package/{PackageID}")
+    String deletePackage(@PathVariable Long PackageID){
+        if(!packageRepository.existsById(PackageID)){
+            throw new PackageNotFoundException(PackageID);
+        }
+        packageRepository.deleteById(PackageID);
+        return "Package with id "+PackageID+" has been deleted successfully.";
+    }
+
+
+
 }
