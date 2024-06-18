@@ -2,10 +2,14 @@
 package bugBust.transitgo.services;
 
 import bugBust.transitgo.model.BusMgt;
+import bugBust.transitgo.model.BusTimeTable;
 import bugBust.transitgo.repository.BusMgtRepository;
+import bugBust.transitgo.repository.BusTimeTableRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,17 +35,19 @@ public class BusMgtService {
         return busmgtRepository.findById(busid).orElse(null);
     }
 
-    public List<BusMgt> searchBusSchedules(String from, String to, String direction) {
-        logger.info("Searching bus schedules from {} to {} with direction {}", from, to, direction);
+    public List<BusMgt> searchBusSchedules(String from, String to, String direction, LocalDate date) {
+        logger.info("Searching bus schedules from {} to {} with direction {} on {}", from, to, direction, date);
         try {
-
             List<BusMgt> buses = busmgtRepository.findAll().stream()
                     .filter(bus -> {
                         if (bus.getStatus().equals("off")) {
                             return false;
                         }
-                        boolean matchesDirection = bus.getStatus().equals(direction);
-                        logger.info("whether direction {}", matchesDirection);
+                        // Check if status from BusTimeTable on specific date matches direction
+                        String statusOnDate = getStatusFromBusTimeTable(bus.getId(), date);
+                        logger.info("Status on Date is {}", statusOnDate);
+                        boolean matchesDirection = statusOnDate != null && statusOnDate.equals(direction);
+                        logger.info("Whether direction {} on date {} is {}", direction, date, matchesDirection);
                         boolean matchesRoute = bus.getSchedules().stream()
                                 .anyMatch(schedule -> schedule.getBusStop().getName().equals(from)
                                         || schedule.getBusStop().getName().equals(to));
@@ -55,6 +61,27 @@ public class BusMgtService {
             throw e;
         }
     }
+
+    private String getStatusFromBusTimeTable(int busId, LocalDate date) {
+        // Implement logic to fetch status from BusTimeTable for given busId and date
+        return busTimeTableRepository.findStatusByBusIdAndDate(busId, date);
+    }
+
+    // Inside BusMgtService
+
+    @Autowired
+    private BusTimeTableRepository busTimeTableRepository;
+
+    @Transactional // Ensure the transactional context to avoid detached entity issues
+    public void updateBusStatusFromTimeTable() {
+        Iterable<BusMgt> allBuses = busmgtRepository.findAll();
+        for (BusMgt bus : allBuses) {
+            List<BusTimeTable> timeTables = busTimeTableRepository.findByBusId(bus.getId()); // Assuming findByBusId exists in repository
+            bus.updateStatusFromTimeTable(timeTables);
+            busmgtRepository.save(bus);
+        }
+    }
+
 
 
 

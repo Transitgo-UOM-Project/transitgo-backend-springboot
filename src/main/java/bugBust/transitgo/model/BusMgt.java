@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 
 @Entity
@@ -73,6 +75,23 @@ public class BusMgt {
 
     public void setRegNo(String regNo) {
         this.regNo = regNo;
+    }
+// Inside BusMgt entity
+
+    public void updateStatusFromTimeTable(List<BusTimeTable> timeTables) {
+        // Assuming you want the latest status, you can iterate through timeTables to find the latest status
+        BusTimeTable latestTimeTable = timeTables.stream()
+                .max(Comparator.comparing(BusTimeTable::getDate)) // Assuming date is the timestamp to determine latest
+                .orElse(null);
+
+        if (latestTimeTable != null) {
+            this.status = latestTimeTable.getStatus();
+        }
+    }
+
+    public String getStatusOnDate(LocalDate date) {
+
+        return "";
     }
 
 
