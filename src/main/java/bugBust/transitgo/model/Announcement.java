@@ -16,6 +16,16 @@ public class Announcement {
     @Column(name = "created_at")
     private Date createdAt;
 
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    private String createdBy;
+
     @PrePersist
     protected void onCreate() {
         createdAt = new Date(); // Current timestamp
