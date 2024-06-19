@@ -2,18 +2,21 @@
 package bugBust.transitgo.controller;
 
 import bugBust.transitgo.model.BusMgt;
+import bugBust.transitgo.model.BusTimeTable;
 import bugBust.transitgo.model.Schedule;
 import bugBust.transitgo.repository.BusMgtRepository;
 import bugBust.transitgo.repository.BusRouteRepository;
+import bugBust.transitgo.repository.BusTimeTableRepository;
 import bugBust.transitgo.repository.ScheduleRepository;
-import bugBust.transitgo.scheduledTask.BusStatusUpdateTask;
 import bugBust.transitgo.services.BusMgtService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,12 +35,11 @@ public class BusMgtController {
     @Autowired
     private BusMgtService busMgtService;
 
-    private BusStatusUpdateTask busStatusUpdateTask;
 
     private static final Logger logger = LoggerFactory.getLogger(BusMgtService.class);
     @PostMapping("bus")
     public ResponseEntity<BusMgt> addABus(@RequestBody BusMgt bus) {
-        return new ResponseEntity<BusMgt>(busMgtService.saveOrUpdateABus(bus), HttpStatus.CREATED);
+        return new ResponseEntity<>(busMgtService.saveOrUpdateABus(bus), HttpStatus.CREATED);
     }
 
     @GetMapping("/buses")
@@ -47,7 +49,7 @@ public class BusMgtController {
 
     @GetMapping("bus/{busid}")
     public ResponseEntity<BusMgt> getBusById(@PathVariable int busid) {
-        return new ResponseEntity<BusMgt>(busMgtService.findBusById(busid), HttpStatus.OK);
+        return new ResponseEntity<>(busMgtService.findBusById(busid), HttpStatus.OK);
     }
 
     @GetMapping("bussched/{busid}")
@@ -85,9 +87,9 @@ public class BusMgtController {
                 .orElseThrow(() -> new IllegalArgumentException("Bus not found with id: " + busid));
     }
 
-    public BusMgtController(BusStatusUpdateTask busStatusUpdateTask) {
-        this.busStatusUpdateTask = busStatusUpdateTask;
-    }
+
+
+
     @DeleteMapping("/bus/{id}")
     String deleteBus(@PathVariable int id) {
         busmgtRepository.deleteById(id);
@@ -98,9 +100,10 @@ public class BusMgtController {
     public ResponseEntity<List<BusMgt>> searchBusSchedules(
             @RequestParam String from,
             @RequestParam String to,
-            @RequestParam String direction) {
+            @RequestParam String direction,
+            @RequestParam LocalDate date) {
         try {
-            List<BusMgt> buses = busMgtService.searchBusSchedules(from, to, direction);
+            List<BusMgt> buses = busMgtService.searchBusSchedules(from, to, direction ,date);
             return ResponseEntity.ok(buses);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -112,5 +115,28 @@ public class BusMgtController {
     public ResponseEntity<List<Schedule>> getBusStopsAndTimes(@PathVariable int busid) {
         List<Schedule> schedules = scheduleRepository.findScheduleByBusId(busid);
         return new ResponseEntity<>(schedules, HttpStatus.OK);
+    }
+
+    @Autowired
+    private BusTimeTableRepository bustimetableRepository;
+
+    @PostMapping("/bus/{busid}/bustimetable")
+    public ResponseEntity<List<BusTimeTable>> saveBusTimeTable(
+            @PathVariable int busid,
+            @RequestBody List<BusTimeTable> busTimeTables) {
+
+        busTimeTables.forEach(status -> status.setBusId(busid));
+        bustimetableRepository.saveAll(busTimeTables);
+        return ResponseEntity.ok(busTimeTables);
+    }
+
+    @GetMapping("/bus/{busid}/bustimetable")
+    public ResponseEntity<List<BusTimeTable>> getBusTimeTable(
+            @PathVariable int busid,
+            @RequestParam LocalDate startDate,
+            @RequestParam LocalDate endDate) {
+
+        List<BusTimeTable> statuses = bustimetableRepository.findByBusIdAndDateBetween(busid, startDate, endDate);
+        return ResponseEntity.ok(statuses);
     }
 }
