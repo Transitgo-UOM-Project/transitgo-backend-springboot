@@ -1,4 +1,6 @@
+//BusStopService.java
 package bugBust.transitgo.services;
+
 import bugBust.transitgo.model.BusStop;
 import bugBust.transitgo.repository.BusStopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,4 +22,6 @@ public class BusStopService {
     public Iterable<BusStop> findAll() {
         return busstopRepository.findAll();
     }
+
+    public Iterable <BusStop> findBusStopByBusRouteNo(int route_no){ return  busstopRepository.findBusStopByBusroute_Routeno(route_no);}
 }

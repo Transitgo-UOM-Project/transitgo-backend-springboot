@@ -1,3 +1,4 @@
+//BusStop.java
 package bugBust.transitgo.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -14,6 +15,16 @@ public class BusStop {
     @ManyToOne
     @JoinColumn(name = "routeno")
     private BusRoute busroute;
+
+    private int orderIndex;
+
+    public int getOrderIndex() {
+        return orderIndex;
+    }
+
+    public void setOrderIndex(int orderIndex) {
+        this.orderIndex = orderIndex;
+    }
 
     @JsonBackReference
     public BusRoute getBusroute() {
