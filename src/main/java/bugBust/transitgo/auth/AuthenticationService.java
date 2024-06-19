@@ -44,6 +44,7 @@ public class AuthenticationService {
                 .fname(request.getFname())
                 .lname(request.getLname())
                 .email(request.getEmail())
+                .phone(request.getPhone())
                 .uname(request.getUname())
                 .busid(request.getBusid())
                 .password(passwordEncoder.encode(request.getPassword()))

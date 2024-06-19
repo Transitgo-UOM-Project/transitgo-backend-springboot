@@ -47,6 +47,7 @@ public class User implements UserDetails {
     private String verificationToken;
     private String otp;
     private LocalDateTime otpTimestamp;
+    private String phone;
 
     public Role getType() {
         return type;

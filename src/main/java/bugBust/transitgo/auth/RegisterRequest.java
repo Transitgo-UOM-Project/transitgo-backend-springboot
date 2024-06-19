@@ -28,4 +28,6 @@ public class RegisterRequest {
 
     private String busid;
 
+    private String phone;
+
 }
