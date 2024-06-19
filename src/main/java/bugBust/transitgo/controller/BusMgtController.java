@@ -117,26 +117,5 @@ public class BusMgtController {
         return new ResponseEntity<>(schedules, HttpStatus.OK);
     }
 
-    @Autowired
-    private BusTimeTableRepository bustimetableRepository;
 
-    @PostMapping("/bus/{busid}/bustimetable")
-    public ResponseEntity<List<BusTimeTable>> saveBusTimeTable(
-            @PathVariable int busid,
-            @RequestBody List<BusTimeTable> busTimeTables) {
-
-        busTimeTables.forEach(status -> status.setBusId(busid));
-        bustimetableRepository.saveAll(busTimeTables);
-        return ResponseEntity.ok(busTimeTables);
-    }
-
-    @GetMapping("/bus/{busid}/bustimetable")
-    public ResponseEntity<List<BusTimeTable>> getBusTimeTable(
-            @PathVariable int busid,
-            @RequestParam LocalDate startDate,
-            @RequestParam LocalDate endDate) {
-
-        List<BusTimeTable> statuses = bustimetableRepository.findByBusIdAndDateBetween(busid, startDate, endDate);
-        return ResponseEntity.ok(statuses);
-    }
 }
