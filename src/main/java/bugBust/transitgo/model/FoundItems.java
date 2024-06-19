@@ -20,6 +20,8 @@ public class FoundItems {
     @Id  // to generate
     @GeneratedValue // id auto generate
     private Long id;
+
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "Name must contain only alphabetic characters")
     private String Name;
 
     @Pattern(regexp = "^(0?7(0|1|2|5|6|7|8)\\d{7})$", message = "Invalid mobile number")
