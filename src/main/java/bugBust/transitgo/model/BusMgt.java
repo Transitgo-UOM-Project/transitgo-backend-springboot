@@ -79,20 +79,24 @@ public class BusMgt {
 // Inside BusMgt entity
 
     public void updateStatusFromTimeTable(List<BusTimeTable> timeTables) {
-        // Assuming you want the latest status, you can iterate through timeTables to find the latest status
-        BusTimeTable latestTimeTable = timeTables.stream()
-                .max(Comparator.comparing(BusTimeTable::getDate)) // Assuming date is the timestamp to determine latest
+        LocalDate today = LocalDate.now();
+
+        // Find the BusTimeTable entry for today's date
+        BusTimeTable todayTimeTable = timeTables.stream()
+                .filter(timeTable -> timeTable.getDate().isEqual(today))
+                .findFirst()
                 .orElse(null);
 
-        if (latestTimeTable != null) {
-            this.status = latestTimeTable.getStatus();
+        if (todayTimeTable != null) {
+            this.status = todayTimeTable.getStatus();
+        } else {
+            // Optionally handle the case where there is no entry for today's date
+            this.status = "off"; // Default status if no entry for today
         }
     }
 
-    public String getStatusOnDate(LocalDate date) {
 
-        return "";
-    }
+
 
 
 }

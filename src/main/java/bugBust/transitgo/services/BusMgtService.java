@@ -7,6 +7,7 @@ import bugBust.transitgo.repository.BusMgtRepository;
 import bugBust.transitgo.repository.BusTimeTableRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -16,6 +17,9 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+
 @Service
 public class BusMgtService {
     @Autowired
@@ -62,10 +66,40 @@ public class BusMgtService {
         }
     }
 
-    private String getStatusFromBusTimeTable(int busId, LocalDate date) {
-        // Implement logic to fetch status from BusTimeTable for given busId and date
-        return busTimeTableRepository.findStatusByBusIdAndDate(busId, date);
+    private String findPreviousWeekStatus(int busid, LocalDate date) {
+        LocalDate previousDate = date;
+        logger.info("previousDate is {} for bus id {}" , previousDate,busid);
+        while (true) {
+            List<BusTimeTable> previousStatuses = busTimeTableRepository.findLatestStatusBeforeDate(busid, previousDate);
+            logger.info("pre xnxxxuuuxxxx  get  0 {} ",previousStatuses.get(0).getStatus());
+
+
+            if (!previousStatuses.isEmpty()) {
+                return previousStatuses.get(0).getStatus();
+            }
+            previousDate = previousDate.minusWeeks(1);
+        }
     }
+
+//    private String getStatusFromBusTimeTable(int busId, LocalDate date) {
+//        // Implement logic to fetch status from BusTimeTable for given busId and date
+//        return busTimeTableRepository.findStatusByBusIdAndDate(busId, date);
+//    }
+
+    private String getStatusFromBusTimeTable(
+            int busid,
+           LocalDate date) {
+
+        String status = busTimeTableRepository.findStatusByBusIdAndDate(busid, date);
+logger.info("status  is {}" , status);
+        if (status == null) {
+            logger.info("status  is null so coming in" );
+            status = findPreviousWeekStatus(busid, date);
+        }
+
+        return status;
+    }
+
 
     // Inside BusMgtService
 
@@ -76,8 +110,10 @@ public class BusMgtService {
     public void updateBusStatusFromTimeTable() {
         Iterable<BusMgt> allBuses = busmgtRepository.findAll();
         for (BusMgt bus : allBuses) {
-            List<BusTimeTable> timeTables = busTimeTableRepository.findByBusId(bus.getId()); // Assuming findByBusId exists in repository
+            List<BusTimeTable> timeTables = busTimeTableRepository.findByBusId(bus.getId());
+            //logger.info("Time table for a bus - {} is {}", bus ,timeTables);
             bus.updateStatusFromTimeTable(timeTables);
+           // logger.info("Found {} bus changed to {}", bus ,bus.getStatus());
             busmgtRepository.save(bus);
         }
     }
