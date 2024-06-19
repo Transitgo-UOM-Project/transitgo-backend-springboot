@@ -3,8 +3,13 @@ package bugBust.transitgo.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+
 
 import java.time.LocalDate;
+
+
 
 @Entity
 public class Package {
@@ -101,6 +106,8 @@ public class Package {
         ReceivedDate = receivedDate;
     }
 
+    @NotNull(message = "Contact number is required")
+    @Pattern(regexp = "^[0-9]{10}",message = "Phone number should be 10 digits")
     private String ReceiverContact;
     private String Payment;
     private String Status;
