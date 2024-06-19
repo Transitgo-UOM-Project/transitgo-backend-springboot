@@ -31,5 +31,6 @@ public class UserDto {
 
     private String otp;
 
+    private String phone;
 
 }
