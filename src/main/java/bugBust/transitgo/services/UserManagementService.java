@@ -100,12 +100,14 @@ public class UserManagementService {
                 existingUser.setLname(updatedUser.getLname());
                 existingUser.setUname(updatedUser.getUname());
                 existingUser.setBusid(updatedUser.getBusid());
+                existingUser.setPhone(updatedUser.getPhone());
 
                 User savedUser = userRepository.save(existingUser);
 
                 response.setFname(savedUser.getFname());
                 response.setLname(savedUser.getLname());
                 response.setUname(savedUser.getUname());
+                response.setPhone(savedUser.getPhone());
                 response.setStatusCode(200);
                 response.setMessage("User Updated Successfully");
             }else {
