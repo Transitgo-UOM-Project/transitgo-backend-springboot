@@ -3,7 +3,9 @@ package bugBust.transitgo.controller;
 import bugBust.transitgo.exception.PackageNotFoundException;
 import bugBust.transitgo.model.Package;
 import bugBust.transitgo.repository.PackageRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +19,10 @@ public class PackageController {
     private PackageRepository packageRepository;
 
     @PostMapping("/package")
-    Package newPackage(@RequestBody Package newPackage){
+    Package newPackage(@Valid @RequestBody Package newPackage, BindingResult result){
+        if(result.hasErrors()){
+            throw new IllegalArgumentException("Invalid Input");
+        }
         return packageRepository.save(newPackage);
     }
     @GetMapping("/packages")
@@ -33,7 +38,10 @@ public class PackageController {
 
     //Edite Status
     @PutMapping("/package/{PackageID}")
-    Package updatePackage(@RequestBody Package newPackage,@PathVariable Long PackageID){
+    Package updatePackage(@Valid @RequestBody Package newPackage, BindingResult result, @PathVariable Long PackageID){
+        if(result.hasErrors()){
+            throw new IllegalArgumentException("Invalid Input");
+        }
         return packageRepository.findById(PackageID)
                 .map(aPackage ->{
                     aPackage.setReceiverName(newPackage.getReceiverName());
