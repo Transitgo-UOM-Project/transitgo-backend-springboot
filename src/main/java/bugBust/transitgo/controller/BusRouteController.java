@@ -1,3 +1,5 @@
+//BusRouteController.java
+
 package bugBust.transitgo.controller;
 
 
@@ -34,25 +36,28 @@ public class BusRouteController {
     public ResponseEntity<BusRoute> getRouteByRouteNo(@PathVariable int BusRouteNo) {
         return new ResponseEntity<BusRoute>(busRouteService.findBusRouteByNo(BusRouteNo), HttpStatus.OK);
     }
-    @PutMapping("/busroute/{id}")
-    BusRoute updateBusRoute(@RequestBody BusRoute newBusRoute, @PathVariable Long id) {
-        return busrouteRepository.findById(id)
-                .map(busRoute -> {
-                    busRoute.setRouteno(newBusRoute.getRouteno());
-                    busRoute.setRoutename(newBusRoute.getRoutename());
-
-                    return busrouteRepository.save(busRoute);
-                }).orElseThrow() ;
+    @PutMapping("busroute/{busRouteNo}")
+    public ResponseEntity<BusRoute> updateBusRoute(@PathVariable("busRouteNo") int busRouteNo, @RequestBody BusRoute updatedBusRoute) {
+        BusRoute updatedRoute = busRouteService.updateBusRoute(busRouteNo, updatedBusRoute);
+        if (updatedRoute != null) {
+            return new ResponseEntity<>(updatedRoute, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
-
     @DeleteMapping("/busroute/{id}")
-    String deleteBusRoute(@PathVariable Long id){
+    String deleteBusRoute(@PathVariable int id){
 //        if(!busrouteRepository.existsById(id)){
 //            throw new UserNotFoundException(id);
 //        }
         busrouteRepository.deleteById(id);
         return  "User with id "+id+" has been deleted success.";
     }
+
+//    @PostMapping("route/addStopBetween")
+//    public void addStopBetween(@RequestParam String routeName, @RequestParam String newStopName, @RequestParam int afterStopOrderIndex) {
+//        busRouteService.addBusStopBetween(routeName, newStopName, afterStopOrderIndex);
+//    }
 
 
 
