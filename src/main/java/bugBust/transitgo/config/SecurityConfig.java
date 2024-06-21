@@ -30,22 +30,27 @@ public class SecurityConfig {
                         request -> request
                                 .requestMatchers("/api/v1/auth/**",
                                                  "/user/**",
-                                                 "/announcement","/announcements",
-                                                 "/busstops")
+                                                 "/announcements",
+                                                 "/founds","/losts","/lost","/found",
+                                                 "/package",
+                                                 "/route/*/stops","busstop/*","/bussched/*","/busroute/*",
+                                                 "/busstops","/bus/search","/bus/*/stops")
                                 .permitAll()
 
                         .requestMatchers("/admin/**",
-                                         "/bus/**",
-                                         "/busroutes/**","/busroute/**",
-                                         "/schedule/**",
-                                         "/busstop/**",
-                                         "/packages/**")
+                                         "/bus","/bus/*",
+                                         "/announcement",
+                                         "/busroutes",
+                                         "/schedule/*",
+                                         "/bus/*/bustimetable",
+                                         "/busstop/*","/busstop",
+                                         "/packages","/package/*")
                                 .hasAnyAuthority("admin")
 
-                        .requestMatchers("/admin-user/**").hasAnyAuthority("admin","passenger","employee")
+                        .requestMatchers("/admin-user/*").hasAnyAuthority("admin","passenger","employee")
 
-                        .requestMatchers("/announcement/**").authenticated()
-                        .requestMatchers("/api/user/**").authenticated()
+                        .requestMatchers("/announcement/*","/lost/*","/found/*").authenticated()
+                        .requestMatchers("/api/user/*").authenticated()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(manage -> manage.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
