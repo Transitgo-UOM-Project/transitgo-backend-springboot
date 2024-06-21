@@ -28,8 +28,10 @@ import java.util.List;
 public class AnnouncementController {
     @Autowired
     private AnnouncementRepository announcementRepository;
-    private final ActivityLogRepository activityLogRepository;
-    private final ActivityLogService activityLogService;
+    @Autowired
+    private  ActivityLogRepository activityLogRepository;
+    @Autowired
+    private  ActivityLogService activityLogService;
 
 
     @PostMapping("/announcement")
@@ -47,6 +49,7 @@ public class AnnouncementController {
 
     @GetMapping("/announcements")
     List<Announcement> getAllAnnouncements(){
+
         return announcementRepository.findAllByOrderByCreatedAtDesc();
     }
 
@@ -56,7 +59,7 @@ public class AnnouncementController {
                 .orElseThrow(()->new AnnouncementNotFoundException(id));
     }
 
-    @DeleteMapping("announcement/{id}")
+    @DeleteMapping("/announcement/{id}")
     String deleteAnnouncement(@PathVariable Long id,Principal principal){
 //        if(!announcementRepository.existsById(id)){
 //            throw  new AnnouncementNotFoundException(id);

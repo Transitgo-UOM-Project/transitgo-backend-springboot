@@ -40,6 +40,15 @@ public class FoundItems {
     private String Item_Description;
 
     private LocalDateTime dateTime;
+    private String createdBy;
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
 
     // Set the dateTime before persisting the entity
     @PrePersist

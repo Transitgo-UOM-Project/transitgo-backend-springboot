@@ -32,6 +32,16 @@ public class Package {
     @Pattern(regexp = "^[0-9]*V?$")
     private String ReceiverNIC;
 
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    private String createdBy;
+
     public Long getPackageID() {
         return PackageID;
     }
