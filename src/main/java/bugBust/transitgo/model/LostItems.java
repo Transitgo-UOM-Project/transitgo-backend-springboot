@@ -14,6 +14,14 @@ import java.time.LocalDateTime;
 
 @Entity
 public class LostItems {
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
     @Id
     @GeneratedValue
     private Long id;
@@ -23,6 +31,7 @@ public class LostItems {
 
     @Pattern(regexp = "^(0?7(0|1|2|5|6|7|8)\\d{7})$", message = "Invalid mobile number")
     private String mobile_Number;
+    private String createdBy;
 
     @Valid
 
