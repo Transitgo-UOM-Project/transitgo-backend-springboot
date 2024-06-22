@@ -35,6 +35,19 @@ public class BusMgt {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "bus", fetch = FetchType.LAZY)
     private List<Schedule> schedules;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bus", fetch = FetchType.LAZY)
+    private List <RateReviews> reviews;
+
+
+    @JsonManagedReference
+    public List<RateReviews> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<RateReviews> reviews) {
+        this.reviews = reviews;
+    }
+
     @JsonManagedReference
     public List<Schedule> getSchedules() {
         return schedules;
