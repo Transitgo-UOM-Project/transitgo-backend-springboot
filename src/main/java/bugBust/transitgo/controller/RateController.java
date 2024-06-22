@@ -23,14 +23,21 @@ public class RateController {
 
 
     //have to add @valid before @RequestBody to valid while posting data
-    @PostMapping("/rate")
+    @PostMapping("rate")
     RateReviews newRateReviews(@Valid @RequestBody RateReviews newRateReviews){
+
         return rateRepository.save(newRateReviews);
     }
 
     @GetMapping("/rates")
     List<RateReviews> getAllReviews(){
-        return rateRepository.findAll();
+
+       return rateRepository.findAll();
+    }
+
+    @GetMapping("/rates/{busId}")
+    List<RateReviews> getAllReviewsFromBusId(@PathVariable  int busId){
+        return rateRepository.findByBusId(busId);
     }
 
     @GetMapping("/rate/{id}") //to edit specific rate with id

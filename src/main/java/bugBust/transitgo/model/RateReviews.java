@@ -1,5 +1,6 @@
 package bugBust.transitgo.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
@@ -27,6 +28,19 @@ public class RateReviews {
     @Size(min=4,message= "The review should be a minimum of 4 characters.")
     private String review;
     private String username;
+
+    @ManyToOne
+    @JoinColumn(name = "busId")
+    private BusMgt bus;
+
+    @JsonBackReference
+    public BusMgt getBuses() {
+        return bus;
+    }
+
+    public void setBuses(BusMgt bus) {
+        this.bus = bus;
+    }
 
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @Column(updatable = false)
