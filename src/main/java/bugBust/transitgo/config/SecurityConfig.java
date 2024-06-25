@@ -29,10 +29,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         request -> request
                                 .requestMatchers("/api/v1/auth/**",
-                                                 "/user/**",
-                                                 "/announcements",
+                                                 "/user/**","/employee/{busId}",
+                                                 "/announcements","/announcement",
                                                  "/founds","/losts","/lost","/found",
-                                                 "/package",
+                                                 "/package","/packages","/package/*","/tracking",
+                                                 "/verifyPassword/*","/deleteUser/*",
+                                                 "/rate","/rates","/rates/*",
                                                  "/route/*/stops","busstop/*","/bussched/*","/busroute/*",
                                                  "/busstops","/bus/search","/bus/*/stops")
                                 .permitAll()
@@ -44,12 +46,13 @@ public class SecurityConfig {
                                          "/schedule/*",
                                          "/bus/*/bustimetable",
                                          "/busstop/*","/busstop",
-                                         "/packages","/package/*")
+                                         "/packages")
                                 .hasAnyAuthority("admin")
+
 
                         .requestMatchers("/admin-user/*").hasAnyAuthority("admin","passenger","employee")
 
-                        .requestMatchers("/announcement/*","/lost/*","/found/*").authenticated()
+                        .requestMatchers("/announcement/*","/lost/*","/found/*","/rate/*").authenticated()
                         .requestMatchers("/api/user/*").authenticated()
                         .anyRequest().authenticated()
                 )

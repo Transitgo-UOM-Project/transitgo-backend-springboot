@@ -9,6 +9,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
+
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -32,7 +34,7 @@ public class UserManagementController {
 
    @DeleteMapping("admin/delete/{id}")
    public ResponseEntity<UserDto> deleteUser(@PathVariable long id){
-        return ResponseEntity.ok(userManagementService.deleteUser(id));
+        return ResponseEntity.ok(userManagementService.deleteEmployee(id));
    }
 
    @PutMapping("/admin-user/update/{id}")
@@ -45,5 +47,21 @@ public class UserManagementController {
         return ResponseEntity.ok(userManagementService.getUserById(id));
    }
 
+   @GetMapping("/employee/{busId}")
+   public ResponseEntity<UserDto> getEmpByBusId(@PathVariable String busId){
+        return ResponseEntity.ok(userManagementService.getEmpByBusID(busId));
+   }
 
+   @PostMapping("/verifyPassword/{email}")
+   public boolean verifyPassword(@PathVariable String email, @RequestBody User user){
+        String password = user.getPassword();
+        String response = userManagementService.verifyPassword(password,email);
+        return Objects.equals(response, "Password Verified");
+   }
+
+   @DeleteMapping("/deleteUser/{email}")
+   public boolean deleteUser(@PathVariable String email){
+        String response = userManagementService.deleteUser(email);
+        return Objects.equals(response, "User Deleted");
+   }
 }

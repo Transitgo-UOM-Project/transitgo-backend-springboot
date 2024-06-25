@@ -3,7 +3,6 @@ package bugBust.transitgo.controller;
 import bugBust.transitgo.exception.ItemNotFoundException;
 import bugBust.transitgo.exception.UnauthorizedException;
 import bugBust.transitgo.model.FoundItems;
-import bugBust.transitgo.model.LostItems;
 import bugBust.transitgo.model.Role;
 import bugBust.transitgo.model.User;
 import bugBust.transitgo.repository.ActivityLogRepository;
@@ -45,7 +44,7 @@ public class FoundController {
 
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long userId = ((User) userDetails).getId();
-        activityLogService.logActivity(userId, "Found Item", savedFoundItem.getItem_Description(), savedFoundItem.getId());
+        activityLogService.logActivity(userId, "Found Item", savedFoundItem.getItem_Description(),"", savedFoundItem.getId());
 
         return  savedFoundItem; // this save the data and return the data what we have posted
     }
@@ -102,7 +101,7 @@ public class FoundController {
         FoundItems found = foundRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id));
         if (!isAuthorizedToModify(principal, found)){
-            throw new UnauthorizedException();
+            throw new UnauthorizedException("You are not authorized to update this review");
         }
 
         foundRepository.deleteById(id);

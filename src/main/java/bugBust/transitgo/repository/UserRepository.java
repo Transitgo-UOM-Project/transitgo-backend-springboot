@@ -20,6 +20,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     void deleteById(Long id);
 
 
+
+    Optional<User> findByBusid(String busId);
+
+
     @Query( "SELECT u FROM User u")
    List<User> findAll();
 }
