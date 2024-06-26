@@ -14,12 +14,13 @@ import java.time.LocalDateTime;
 public class ActivityLogService {
     private final ActivityLogRepository activityLogRepository;
 
-    public ActivityLogDto logActivity(Long userId, String activityType, String description, Long activityId){
+    public ActivityLogDto logActivity(Long userId, String activityType, String description, String info, Long activityId){
         ActivityLogDto response = new ActivityLogDto();
         ActivityLog activityLog = ActivityLog.builder()
                 .userId(userId)
                 .activityType(activityType)
                 .description(description)
+                .info(info)
                 .dateTime(LocalDateTime.now())
                 .activityId(activityId)
                 .build();

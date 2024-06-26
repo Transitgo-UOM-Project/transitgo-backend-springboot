@@ -1,11 +1,16 @@
 package bugBust.transitgo.controller;
 
 import bugBust.transitgo.exception.RateNotFoundException;
+import bugBust.transitgo.exception.UnauthorizedException;
+import bugBust.transitgo.model.BusMgt;
 import bugBust.transitgo.model.RateReviews;
+import bugBust.transitgo.repository.BusMgtRepository;
 import bugBust.transitgo.repository.RateRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -16,15 +21,23 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@CrossOrigin("http://localhost:3000/")
+@CrossOrigin("http://localhost:3000")
 public class RateController {
     @Autowired
     private RateRepository rateRepository;
+    private BusMgtRepository busMgtRepository;
 
 
     //have to add @valid before @RequestBody to valid while posting data
-    @PostMapping("rate")
+    @PostMapping("/rate")
     RateReviews newRateReviews(@Valid @RequestBody RateReviews newRateReviews){
+//        RateReviews rateReviews = new RateReviews();
+//        rateReviews.setRate(newRateReviews.getRate());
+//        rateReviews.setReview(newRateReviews.getReview());
+//        rateReviews.setUsername(newRateReviews.getUsername());
+//
+//
+//
 
         return rateRepository.save(newRateReviews);
     }
@@ -42,15 +55,25 @@ public class RateController {
 
     @GetMapping("/rate/{id}") //to edit specific rate with id
     RateReviews geRateReviewsById(@PathVariable Long id){
+        String currentUser = getCurrentUSer();
         return rateRepository.findById(id)
-                .orElseThrow(() -> new RateNotFoundException(id));
+                .map(rateReviews -> {
+                    if (!rateReviews.getUsername().equals(currentUser)) {
+                        throw new UnauthorizedException("You are not authorized to view this review");
+                    }
+                    return rateReviews;
+                }).orElseThrow(() -> new RateNotFoundException(id));
     }
 
     //have to add @valid before @RequestBody to valid while edit
     @PutMapping("/rate/{id}")  //edit rates
     RateReviews updateRateReviews(@Valid @RequestBody RateReviews newRateReviews, @PathVariable Long id) {
+        String currentUser = getCurrentUSer();
         return rateRepository.findById(id)
                 .map(rateReviews -> {
+                    if(!rateReviews.getUsername().equals(currentUser)){
+                        throw new UnauthorizedException("You are not authorized to update this review");
+                    }
                     rateReviews.setRate(newRateReviews.getRate());
                     rateReviews.setReview(newRateReviews.getReview());
                     rateReviews.setCreatedAt(LocalDateTime.now());  // Update the createdAt timestamp
@@ -60,12 +83,18 @@ public class RateController {
 
     @DeleteMapping("/rate/{id}") //delete user with specific id
     String deleteRateReview(@PathVariable Long id){
-        if (!rateRepository.existsById(id)) {
-            throw new RateNotFoundException(id);
+        String currentUser = getCurrentUSer();
+        return rateRepository.findById(id)
+                .map(rateReviews -> {
+                    if (!rateReviews.getUsername().equals(currentUser)){
+                        throw new UnauthorizedException("You are not authorized to delete this review");
+                    }
+                    rateRepository.deleteById(id);
+                    return "User with id " + id + " has been deleted successfully.";
+                }).orElseThrow(() -> new RateNotFoundException(id));
         }
-        rateRepository.deleteById(id);
-        return "User with id " + id + " has been deleted successfully.";
-    }
+
+
 
     // to give a detailed error message for valid -notnull-400 bad request
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -81,5 +110,10 @@ public class RateController {
         });
 
         return errors;
+    }
+
+    private String getCurrentUSer(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
     }
 }

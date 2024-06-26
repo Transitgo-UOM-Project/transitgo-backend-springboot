@@ -1,9 +1,6 @@
 package bugBust.transitgo.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -23,6 +20,10 @@ public class ActivityLog {
     private Long userId;
     private Long activityId;
     private String activityType;
+    @Lob
     private String description;
+    private String info;
     private LocalDateTime dateTime;
+
+    private String pacStatus;
 }

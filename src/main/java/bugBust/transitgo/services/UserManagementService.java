@@ -70,7 +70,7 @@ public class UserManagementService {
         }
     }
 
-    public UserDto deleteUser(Long id){
+    public UserDto deleteEmployee(Long id){
         UserDto response = new UserDto();
         try{
             Optional<User> userOptional = userRepository.findById(id);
@@ -80,7 +80,7 @@ public class UserManagementService {
                 response.setMessage("User Deleted Successfully");
             }else {
                 response.setStatusCode(404);
-                response.setMessage("User nor found for deletion");
+                response.setMessage("User not found for deletion");
             }
         }catch (Exception e){
             response.setStatusCode(500);
@@ -136,6 +136,43 @@ public class UserManagementService {
     }
 
 
+    public UserDto getEmpByBusID(String busId){
+        UserDto response = new UserDto();
+        try {
+            User emp = userRepository.findByBusid(busId).orElseThrow(() -> new RuntimeException("Employee not Found"));
+            response.setUser(emp);
+            response.setMessage("Employee found successfully");
+        }catch (Exception e){
+            response.setStatusCode(500);
+            response.setMessage("Error occurred : "+ e.getMessage());
+        }
+        return response;
+    }
 
 
+    public String verifyPassword(String password, String email){
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if(userOpt.isPresent()){
+            User present = userOpt.get();
+            if(passwordEncoder.matches(password, present.getPassword())){
+                   return ("Password Verified");
+            }else{
+                return ("Incorrect Password");
+            }
+        }else {
+            return ("User Not Found");
+        }
+
+    }
+
+    public String deleteUser(String email){
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()){
+            User user = userOptional.get();
+            Long id = user.getId();
+            userRepository.deleteById(id);
+            return "User Deleted";
+        }
+        return "Error Deleting User";
+    }
 }

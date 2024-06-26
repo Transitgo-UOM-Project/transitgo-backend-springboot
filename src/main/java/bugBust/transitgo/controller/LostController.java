@@ -1,9 +1,7 @@
 package bugBust.transitgo.controller;
 
-import bugBust.transitgo.exception.AnnouncementNotFoundException;
 import bugBust.transitgo.exception.ItemNotFoundException;
 import bugBust.transitgo.exception.UnauthorizedException;
-import bugBust.transitgo.model.Announcement;
 import bugBust.transitgo.model.LostItems;
 import bugBust.transitgo.model.Role;
 import bugBust.transitgo.model.User;
@@ -11,7 +9,6 @@ import bugBust.transitgo.repository.ActivityLogRepository;
 import bugBust.transitgo.repository.LostRepository;
 import bugBust.transitgo.services.ActivityLogService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,7 +52,7 @@ public class LostController {
 
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long userId = ((User) userDetails).getId();
-        activityLogService.logActivity(userId, "Lost Item", savedLostItem.getItem_Description(), savedLostItem.getId());
+        activityLogService.logActivity(userId, "Lost Item", savedLostItem.getItem_Description(),"", savedLostItem.getId());
 
         return savedLostItem;
     }
@@ -123,7 +120,7 @@ public class LostController {
         LostItems lost = lostRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id));
         if (!isAuthorizedToModify(principal, lost)){
-            throw new UnauthorizedException();
+            throw new UnauthorizedException("You are not authorized to update this review");
         }
 
         lostRepository.deleteById(id);
