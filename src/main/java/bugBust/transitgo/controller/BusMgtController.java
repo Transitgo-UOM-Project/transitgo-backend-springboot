@@ -118,4 +118,16 @@ public class BusMgtController {
     }
 
 
+    @PutMapping("/busLocation/{busid}")
+    public BusMgt updateBusLocation(@RequestBody BusMgt newBus, @PathVariable int busid){
+        return busmgtRepository.findById(busid)
+                .map(bus -> {
+                    bus.setLatitude(newBus.getLatitude());
+                    bus.setLongitude(newBus.getLongitude());
+                    logger.info("Location of bus {} updated to ({} , {})", bus.getRegNo(), newBus.getLatitude(), newBus.getLongitude());
+                    return busmgtRepository.save(bus);
+                })
+                .orElseThrow(() -> new IllegalArgumentException("Bus not found with id: " + busid));
+    }
+
 }
