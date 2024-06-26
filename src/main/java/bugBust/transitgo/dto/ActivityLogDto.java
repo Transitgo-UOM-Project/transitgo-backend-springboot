@@ -20,7 +20,9 @@ public class ActivityLogDto {
     private Long userId;
     private String activityType;
     private String description;
+    private String info;
     private LocalDateTime dateTime;
     private Long activityId;
+
     private List<ActivityLog> ActivityLogList;
 }

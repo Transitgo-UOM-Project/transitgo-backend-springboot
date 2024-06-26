@@ -1,12 +1,9 @@
 package bugBust.transitgo.controller;
 
 import java.security.Principal;
-import java.util.Optional;
-import java.util.logging.Logger;
 
 import bugBust.transitgo.exception.AnnouncementNotFoundException;
 import bugBust.transitgo.exception.UnauthorizedException;
-import bugBust.transitgo.model.ActivityLog;
 import bugBust.transitgo.model.Announcement;
 import bugBust.transitgo.model.Role;
 import bugBust.transitgo.model.User;
@@ -42,7 +39,7 @@ public class AnnouncementController {
         //Log Activity
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long userId = ((User) userDetails).getId();
-        activityLogService.logActivity(userId, "Announcement", savedAnnouncement.getDetails(), savedAnnouncement.getId());
+        activityLogService.logActivity(userId, "Announcement", savedAnnouncement.getDetails(), "", savedAnnouncement.getId());
 
         return savedAnnouncement;
     }
@@ -67,7 +64,7 @@ public class AnnouncementController {
         Announcement announcement = announcementRepository.findById(id)
                 .orElseThrow(() -> new AnnouncementNotFoundException(id));
         if (!isAuthorizedToModify(principal, announcement)){
-            throw new UnauthorizedException();
+            throw new UnauthorizedException("You are not authorized to update this review");
         }
 
         announcementRepository.deleteById(id);

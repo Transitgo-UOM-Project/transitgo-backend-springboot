@@ -14,12 +14,17 @@ import java.time.LocalDate;
 @Entity
 public class Package {
 
+    public Long getEmployeeId() {
+        return employeeId;
+    }
+
+    public void setEmployeeId(Long employeeId) {
+        this.employeeId = employeeId;
+    }
+
     @Id
     @GeneratedValue
     private Long PackageID;
-
-
-
     private String BusID;
     private LocalDate ReceivedDate;
     private String Start;
@@ -31,6 +36,25 @@ public class Package {
     @NotNull(message = "NIC is required")
     @Pattern(regexp = "^[0-9]*V?$")
     private String ReceiverNIC;
+    private String employeeName;
+    private String employeePhone;
+    private Long employeeId;
+
+    public String getEmployeeName() {
+        return employeeName;
+    }
+
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
+    }
+
+    public String getEmployeePhone() {
+        return employeePhone;
+    }
+
+    public void setEmployeePhone(String employeePhone) {
+        this.employeePhone = employeePhone;
+    }
 
     public String getCreatedBy() {
         return createdBy;

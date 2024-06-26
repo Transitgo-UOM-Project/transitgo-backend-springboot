@@ -18,7 +18,6 @@ public class RateReviews {
 
     //valid to be notnull
     @Valid
-
     @NotNull(message="Rating is required")
     @NotBlank(message="Rating is required")
     private String rate;
