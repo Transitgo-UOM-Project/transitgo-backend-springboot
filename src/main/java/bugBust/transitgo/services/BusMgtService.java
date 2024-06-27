@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -28,7 +29,15 @@ public class BusMgtService {
     private static final Logger logger = LoggerFactory.getLogger(BusMgtService.class);
 
     public BusMgt saveOrUpdateABus(BusMgt bus) {
-        return busmgtRepository.save(bus);
+        Optional<BusMgt> existingBus = busmgtRepository.findById(bus.getId());
+        if (existingBus.isPresent()) {
+            BusMgt busToUpdate = existingBus.get();
+            busToUpdate.setDelay(bus.getDelay());
+            busToUpdate.setLastLeftStop(bus.getLastLeftStop());
+            return busmgtRepository.save(busToUpdate);
+        } else {
+            return busmgtRepository.save(bus);
+        }
     }
 
     public Iterable<BusMgt> findAll() {

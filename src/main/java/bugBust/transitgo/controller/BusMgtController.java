@@ -37,7 +37,7 @@ public class BusMgtController {
 
 
     private static final Logger logger = LoggerFactory.getLogger(BusMgtService.class);
-    @PostMapping("bus")
+    @PostMapping("/bus")
     public ResponseEntity<BusMgt> addABus(@RequestBody BusMgt bus) {
         return new ResponseEntity<>(busMgtService.saveOrUpdateABus(bus), HttpStatus.CREATED);
     }
