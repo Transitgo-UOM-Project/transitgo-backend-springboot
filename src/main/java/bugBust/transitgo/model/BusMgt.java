@@ -48,6 +48,24 @@ public class BusMgt {
         this.longitude = longitude;
     }
 
+    private String delay;
+    private String lastLeftStop;
+
+    public String getDelay() {
+        return delay;
+    }
+
+    public void setDelay(String delay) {
+        this.delay = delay;
+    }
+
+    public String getLastLeftStop() {
+        return lastLeftStop;
+    }
+
+    public void setLastLeftStop(String lastLeftStop) {
+        this.lastLeftStop = lastLeftStop;
+    }
 
     @ManyToOne
     @JoinColumn(name = "routeno")
@@ -110,23 +128,37 @@ public class BusMgt {
     public void setRegNo(String regNo) {
         this.regNo = regNo;
     }
-// Inside BusMgt entity
+
 
     public void updateStatusFromTimeTable(List<BusTimeTable> timeTables) {
         LocalDate today = LocalDate.now();
+        LocalDate dateToCheck = today;
+        String statusToUpdate = null;
 
-        // Find the BusTimeTable entry for today's date
-        BusTimeTable todayTimeTable = timeTables.stream()
-                .filter(timeTable -> timeTable.getDate().isEqual(today))
-                .findFirst()
-                .orElse(null);
+        // Loop until a valid status is found or all dates are checked
+        while (statusToUpdate == null) {
+            LocalDate finalDateToCheck = dateToCheck;  // Make a final copy of dateToCheck for the lambda
+            // Find the BusTimeTable entry for the current date to check
+            BusTimeTable timeTable = timeTables.stream()
+                    .filter(t -> t.getDate().isEqual(finalDateToCheck))
+                    .findFirst()
+                    .orElse(null);
 
-        if (todayTimeTable != null) {
-            this.status = todayTimeTable.getStatus();
-        } else {
-            // Optionally handle the case where there is no entry for today's date
-            this.status = "off"; // Default status if no entry for today
+            if (timeTable != null) {
+                statusToUpdate = timeTable.getStatus();
+            } else {
+                // Go back one week
+                dateToCheck = dateToCheck.minusWeeks(1);
+
+                LocalDate limit = LocalDate.of(2024, 6, 10);
+                if (dateToCheck.isBefore(limit)) {
+                    break;
+                }
+            }
         }
+
+        // Update the status with the found status or default to "off" if no valid status was found
+        this.status = (statusToUpdate != null) ? statusToUpdate : "off";
     }
 
 
