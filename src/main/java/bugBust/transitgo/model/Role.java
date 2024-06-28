@@ -16,7 +16,7 @@ import static bugBust.transitgo.model.Permission.admin_delete;
 
 @RequiredArgsConstructor
 public enum Role {
-    USER(Collections.emptySet()),
+    User(Collections.emptySet()),
     admin(
             Set.of(
                     admin_read,
