@@ -36,7 +36,7 @@ public class BusRouteController {
     public ResponseEntity<BusRoute> getRouteByRouteNo(@PathVariable int BusRouteNo) {
         return new ResponseEntity<BusRoute>(busRouteService.findBusRouteByNo(BusRouteNo), HttpStatus.OK);
     }
-    @PutMapping("busroute/{busRouteNo}")
+    @PutMapping("/busroute/{busRouteNo}")
     public ResponseEntity<BusRoute> updateBusRoute(@PathVariable("busRouteNo") int busRouteNo, @RequestBody BusRoute updatedBusRoute) {
         BusRoute updatedRoute = busRouteService.updateBusRoute(busRouteNo, updatedBusRoute);
         if (updatedRoute != null) {

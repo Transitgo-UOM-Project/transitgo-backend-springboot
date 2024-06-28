@@ -27,7 +27,7 @@ public class BusStopController {
     @Autowired
     private ScheduleRepository scheduleRepository;
 
-    @PostMapping("busstop")
+    @PostMapping("/busstop")
     public ResponseEntity<BusStop> addABusstop(@RequestBody BusStop busstop) {
         return new ResponseEntity<BusStop>(busStopService.saveOrUpdateABusStop(busstop), HttpStatus.CREATED);
     }

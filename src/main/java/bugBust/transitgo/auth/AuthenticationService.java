@@ -38,7 +38,13 @@ public class AuthenticationService {
 
         // Get the user's role from the request
             String userRole = request.getType();
-            Role role = Role.valueOf((userRole.equals("employee")) ?  "employee" : "passenger");
+            Role role = null;
+        switch (userRole.toLowerCase()) {
+            case "admin" -> role = Role.admin;
+            case "employee" -> role = Role.employee;
+            default -> role = Role.passenger;
+        }
+            //Role role = Role.valueOf((userRole.equals("employee")) ?  "employee" : "passenger");
 
         var user = User.builder()
                 .fname(request.getFname())

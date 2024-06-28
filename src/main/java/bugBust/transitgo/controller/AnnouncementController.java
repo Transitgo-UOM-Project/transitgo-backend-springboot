@@ -12,12 +12,15 @@ import bugBust.transitgo.repository.AnnouncementRepository;
 import bugBust.transitgo.services.ActivityLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static bugBust.transitgo.model.Role.admin;
 
 @RestController
 @RequiredArgsConstructor
@@ -90,6 +93,6 @@ public class AnnouncementController {
     private boolean isAuthorizedToModify(Principal principal, Announcement announcement){
         String username = principal.getName();
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-         return announcement.getCreatedBy().equals(username) || userDetails.getAuthorities().contains(new SimpleGrantedAuthority(Role.admin.name()));
+         return announcement.getCreatedBy().equals(username) || userDetails.getAuthorities().contains(new SimpleGrantedAuthority("Roleadmin"));
     }
 }

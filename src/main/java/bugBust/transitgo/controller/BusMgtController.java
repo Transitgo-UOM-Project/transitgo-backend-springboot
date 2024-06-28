@@ -37,7 +37,7 @@ public class BusMgtController {
 
 
     private static final Logger logger = LoggerFactory.getLogger(BusMgtService.class);
-    @PostMapping("bus")
+    @PostMapping("/bus")
     public ResponseEntity<BusMgt> addABus(@RequestBody BusMgt bus) {
         return new ResponseEntity<>(busMgtService.saveOrUpdateABus(bus), HttpStatus.CREATED);
     }
@@ -47,12 +47,12 @@ public class BusMgtController {
         return busMgtService.findAll();
     }
 
-    @GetMapping("bus/{busid}")
+    @GetMapping("/bus/{busid}")
     public ResponseEntity<BusMgt> getBusById(@PathVariable int busid) {
         return new ResponseEntity<>(busMgtService.findBusById(busid), HttpStatus.OK);
     }
 
-    @GetMapping("bussched/{busid}")
+    @GetMapping("/bussched/{busid}")
     public List<Schedule> getScheduleByBusId(@PathVariable int busid) {
         // Retrieve existing schedules associated with the bus
         List<Schedule> existingSchedules = scheduleRepository.findScheduleByBusId(busid);
