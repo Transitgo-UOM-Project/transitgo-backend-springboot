@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,17 +33,17 @@ import java.util.stream.Collectors;
 public class LostController {
 
     @Autowired
-    private  LostRepository lostRepository;
+    private LostRepository lostRepository;
     @Autowired
     private ActivityLogRepository activityLogRepository;
     @Autowired
-    private  ActivityLogService activityLogService;
+    private ActivityLogService activityLogService;
 
     @Autowired
     public LostController(LostRepository lostRepository) {
 
         this.lostRepository = lostRepository;
-   }
+    }
 
     @PostMapping("/lost")
     public LostItems newLostItems(@Valid @RequestBody LostItems newLostItems, Principal principal) {
@@ -52,7 +53,7 @@ public class LostController {
 
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long userId = ((User) userDetails).getId();
-        activityLogService.logActivity(userId, "Lost Item", savedLostItem.getItem_Description(),"", savedLostItem.getId());
+        activityLogService.logActivity(userId, "Lost Item", savedLostItem.getItem_Description(), "", savedLostItem.getId());
 
         return savedLostItem;
     }
@@ -119,7 +120,7 @@ public class LostController {
 
         LostItems lost = lostRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id));
-        if (!isAuthorizedToModify(principal, lost)){
+        if (!isAuthorizedToModify(principal, lost)) {
             throw new UnauthorizedException("You are not authorized to update this review");
         }
 
@@ -131,11 +132,11 @@ public class LostController {
     // to give a detailed error message for valid -notnull-400 bad request
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationException(MethodArgumentNotValidException ex){
+    public Map<String, String> handleValidationException(MethodArgumentNotValidException ex) {
 
         Map<String, String> errors = new HashMap<>();
 
-        ex.getBindingResult().getAllErrors().forEach((error)  -> {
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
@@ -144,7 +145,7 @@ public class LostController {
         return errors;
     }
 
-    private boolean isAuthorizedToModify(Principal principal, LostItems lostItems){
+    private boolean isAuthorizedToModify(Principal principal, LostItems lostItems) {
         String username = principal.getName();
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return lostItems.getCreatedBy().equals(username) || userDetails.getAuthorities().contains(new SimpleGrantedAuthority(Role.admin.name()));

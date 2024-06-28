@@ -17,13 +17,13 @@ private ScheduleRepository scheduleRepository;
     @Autowired
     private ScheduleService scheduleService;
 
-    @PostMapping("schedule")
+    @PostMapping("/schedule")
     public ResponseEntity<Schedule> createSchedule(@RequestBody Schedule schedule) {
         Schedule createdSchedule = scheduleService.saveOrUpdateASchedule(schedule);
         return new ResponseEntity<>(createdSchedule, HttpStatus.CREATED);
     }
 
-    @GetMapping("schedule/{id}")
+    @GetMapping("/schedule/{id}")
     public ResponseEntity<Schedule> getScheduleById(@PathVariable("id") int id) {
         Schedule schedule = scheduleService.findScheduleById(id);
         if (schedule != null) {
@@ -33,7 +33,7 @@ private ScheduleRepository scheduleRepository;
         }
     }
 
-    @GetMapping("schedules")
+    @GetMapping("/schedules")
     public ResponseEntity<Iterable<Schedule>> getAllSchedules() {
         Iterable<Schedule> schedules = scheduleService.findAll();
         return new ResponseEntity<>(schedules, HttpStatus.OK);
