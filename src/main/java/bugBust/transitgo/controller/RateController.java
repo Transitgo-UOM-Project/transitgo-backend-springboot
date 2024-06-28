@@ -9,6 +9,7 @@ import bugBust.transitgo.repository.RateRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.FieldError;
@@ -19,27 +20,39 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
 public class RateController {
     @Autowired
     private RateRepository rateRepository;
-    private BusMgtRepository busMgtRepository;
+    @Autowired
+    private  BusMgtRepository busMgtRepository;
 
 
     //have to add @valid before @RequestBody to valid while posting data
-    @PostMapping("/rate")
-    RateReviews newRateReviews(@Valid @RequestBody RateReviews newRateReviews){
-//        RateReviews rateReviews = new RateReviews();
-//        rateReviews.setRate(newRateReviews.getRate());
-//        rateReviews.setReview(newRateReviews.getReview());
-//        rateReviews.setUsername(newRateReviews.getUsername());
-//
-//
-//
+//    @PostMapping("/rate")
+//    RateReviews newRateReviews(@Valid @RequestBody RateReviews newRateReviews){
+//        return rateRepository.save(newRateReviews);
+//    }
 
-        return rateRepository.save(newRateReviews);
+    @RequestMapping("/rate/bus")
+    public ResponseEntity<RateReviews> createRateReview(@RequestBody Map<String, Object> rateReviewData){
+        Map<String, Object> busesData = (Map<String, Object>) rateReviewData.get("buses");
+        int busId = (int) busesData.get("busId");
+
+        BusMgt bus = busMgtRepository.findById(busId)
+                .orElseThrow(() -> new RuntimeException("Bus not found"));
+
+        RateReviews rateReviews = new RateReviews();
+        rateReviews.setBus(bus);
+        rateReviews.setRate(rateReviewData.get("rate").toString());
+        rateReviews.setReview(rateReviewData.get("review").toString());
+        rateReviews.setUsername(rateReviewData.get("username").toString());
+
+        RateReviews savedReview = rateRepository.save(rateReviews);
+        return new ResponseEntity<>(savedReview, HttpStatus.CREATED);
     }
 
     @GetMapping("/rates")

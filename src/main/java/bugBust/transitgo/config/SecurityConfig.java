@@ -56,7 +56,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasAnyAuthority("Roleadmin")
                         .requestMatchers(PUT,"/bus/*","/busStatus/*","/schedule/*","/busstop/*","/busroute/*").hasAnyAuthority("Roleadmin")
                         .requestMatchers(DELETE,"/bus/*","/package/*","/busstop/*","/busroute/*").hasAnyAuthority("Roleadmin")
-                        .requestMatchers(POST,"/schedule","/bus/*/bustimetable","/busstop").hasAnyAuthority("Roleadmin")
+                        .requestMatchers(POST,"/bus","/schedule","/bus/*/bustimetable","/busstop").hasAnyAuthority("Roleadmin")
                         .requestMatchers(GET,"/schedule/*","/busroute","/busroutes").hasAnyAuthority("Roleadmin")
 
                         .requestMatchers(GET,"/packages").hasAnyAuthority("Roleemployee","Roleadmin")
@@ -68,7 +68,7 @@ public class SecurityConfig {
                         //.requestMatchers(GET,"/*/activity-logs").hasAnyAuthority("Rolepassenger","Roleemployee" )
 
                         .requestMatchers(PUT,"/admin-user/update/*").hasAnyAuthority("Roleadmin", "Rolepassenger", "Roleemployee")
-                        .requestMatchers(POST,"/rate","/bus","/lost","/found","/announcement").hasAnyAuthority("Roleadmin", "Rolepassenger", "Roleemployee")
+                        .requestMatchers(POST,"/rate/bus","/lost","/found","/announcement").hasAnyAuthority("Roleadmin", "Rolepassenger", "Roleemployee")
                         .requestMatchers(GET,"/employee/*").hasAnyAuthority("Roleadmin", "Rolepassenger", "Roleemployee")
 
                         .requestMatchers(GET,"/user/profile","/announcement/*","/lost/*","/found/*","/rate/*","/announcements").authenticated()
