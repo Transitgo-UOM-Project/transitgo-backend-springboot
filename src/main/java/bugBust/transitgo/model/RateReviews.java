@@ -33,11 +33,11 @@ public class RateReviews {
     private BusMgt bus;
 
     @JsonBackReference
-    public BusMgt getBuses() {
+    public BusMgt getBus() {
         return bus;
     }
 
-    public void setBuses(BusMgt bus) {
+    public void setBus(BusMgt bus) {
         this.bus = bus;
     }
 
