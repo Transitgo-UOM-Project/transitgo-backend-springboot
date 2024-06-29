@@ -66,7 +66,7 @@ public class UserManagementController {
         return Objects.equals(response, "User Deleted");
    }
 
-   @GetMapping("/user/{id}")
+   @GetMapping("/userBus/{id}")
    public int userById(@PathVariable Long id){
          return userManagementService.userById(id);
    }
