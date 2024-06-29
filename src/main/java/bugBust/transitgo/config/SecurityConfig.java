@@ -53,14 +53,14 @@ public class SecurityConfig {
                                 .requestMatchers(GET,"/bus/*","/bussched/*","/bus/search","/bus/*/stops","/bus/*/bustimetable","busstop/*","/route/*/stops","/busroute/*").permitAll()
 
                         .requestMatchers("/admin/**").hasAnyAuthority("Roleadmin")
-                        .requestMatchers(PUT,"/bus/*","/busStatus/*","/schedule/*","/busstop/*","/busroute/*").hasAnyAuthority("Roleadmin")
-                        .requestMatchers(DELETE,"/bus/*","/busstop/*","/busroute/*").hasAnyAuthority("Roleadmin")
-                        .requestMatchers(POST,"/bus","/schedule","/bus/*/bustimetable","/busstop").hasAnyAuthority("Roleadmin")
-                        .requestMatchers(GET,"/schedule/*","/busroute","/busroutes").hasAnyAuthority("Roleadmin")
+                        .requestMatchers(PUT,"/bus/*","/busStatus/*","/schedule/*","/busstop/*","/busroute/*","/busstoplocation/*").hasAnyAuthority("Roleadmin")
+                        .requestMatchers(DELETE,"/bus/*","/busstop/*","/busroute/*","/busstoplocation/*","/package/*").hasAnyAuthority("Roleadmin")
+                        .requestMatchers(POST,"/bus","/schedule","/bus/*/bustimetable","/busstop","/busstoplocation").hasAnyAuthority("Roleadmin")
+                        .requestMatchers(GET,"/schedule/*","/busroute","/busroutes","/busstoplocations").hasAnyAuthority("Roleadmin")
 
                         .requestMatchers(GET,"/packages").hasAnyAuthority("Roleemployee","Roleadmin")
                         .requestMatchers(PUT,"/package/*").hasAnyAuthority("Roleemployee")
-                        .requestMatchers(DELETE,"/package/*").hasAnyAuthority("Roleadmin")
+                        .requestMatchers(GET,"/user/*").hasAnyAuthority("Roleemployee")
 
                         .requestMatchers(POST,"/verifyPassword/*").hasAnyAuthority("Rolepassenger")
                         .requestMatchers(DELETE,"/deleteUser/*").hasAnyAuthority("Rolepassenger")
