@@ -25,6 +25,7 @@ public class Announcement {
     }
 
     private String createdBy;
+    private String user;
 
     @PrePersist
     protected void onCreate() {
@@ -34,6 +35,14 @@ public class Announcement {
     // Getters and setters for createdAt field
     public Date getCreatedAt() {
         return createdAt;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 
     public void setCreatedAt(Date createdAt) {

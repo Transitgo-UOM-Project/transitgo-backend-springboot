@@ -9,6 +9,7 @@ import bugBust.transitgo.model.Role;
 import bugBust.transitgo.model.User;
 import bugBust.transitgo.repository.ActivityLogRepository;
 import bugBust.transitgo.repository.AnnouncementRepository;
+import bugBust.transitgo.repository.UserRepository;
 import bugBust.transitgo.services.ActivityLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import static bugBust.transitgo.model.Role.admin;
 
@@ -32,10 +34,19 @@ public class AnnouncementController {
     private  ActivityLogRepository activityLogRepository;
     @Autowired
     private  ActivityLogService activityLogService;
+    @Autowired
+    private UserRepository userRepository;
 
 
     @PostMapping("/announcement")
     Announcement newAnnouncement(@RequestBody Announcement newAnnouncement, Principal principal){
+        String userMail = principal.getName();
+        Optional<User> user = userRepository.findByEmail(userMail);
+        if (user.isPresent()){
+            String username = user.get().getUname();
+            newAnnouncement.setUser(username);
+        }
+
         newAnnouncement.setCreatedBy(principal.getName());
         Announcement savedAnnouncement  = announcementRepository.save(newAnnouncement);
 

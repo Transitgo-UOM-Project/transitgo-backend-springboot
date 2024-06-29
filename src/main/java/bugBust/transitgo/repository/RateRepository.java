@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface RateRepository extends JpaRepository<RateReviews, Long> {
 
-List<RateReviews> findByBusId(int bus_id);
+List<RateReviews> findByBusId(int busId);
 }
