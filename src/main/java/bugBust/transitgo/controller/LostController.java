@@ -83,24 +83,23 @@ public class LostController {
     }
 
     @PutMapping("/lost/{id}")
-    public ResponseEntity<LostItems> updateLost(@Valid @RequestBody LostItems newLostItems, @PathVariable Long id) {
+    public ResponseEntity<LostItems> updateLost(@Valid @RequestBody LostItems newLostItems, @PathVariable Long id,Principal principal) {
         try {
-            LostItems updatedItem = lostRepository.findById(id)
-                    .map(lostItems -> {
-                        lostItems.setName(newLostItems.getName());
-                        lostItems.setMobile_Number(newLostItems.getMobile_Number());
-                        lostItems.setBus_Description(newLostItems.getBus_Description());
-                        lostItems.setItem_Description(newLostItems.getItem_Description());
-                        if (newLostItems.getDateTime() != null) {
-                            lostItems.setDateTime(newLostItems.getDateTime());
-                        } else {
-                            lostItems.setDateTime(LocalDateTime.now());
-                        }
-                        return lostRepository.save(lostItems);
+            LostItems existingItem = lostRepository.findById(id)
+                    .orElseThrow(() -> new ItemNotFoundException(id));
 
-                    }).orElseThrow(() -> new ItemNotFoundException(id));
+            existingItem.setName(newLostItems.getName());
+            existingItem.setMobile_Number(newLostItems.getMobile_Number());
+            existingItem.setBus_Description(newLostItems.getBus_Description());
+            existingItem.setItem_Description(newLostItems.getItem_Description());
+            if (newLostItems.getDateTime() != null) {
+                existingItem.setDateTime(newLostItems.getDateTime());
+            } else {
+                existingItem.setDateTime(LocalDateTime.now());
+            }
+            LostItems updatedItem = lostRepository.save(existingItem);
 
-            //update activity log
+            // Update activity log
             activityLogRepository.findByActivityId(id).ifPresent(activityLog -> {
                 activityLog.setDescription(newLostItems.getItem_Description());
                 activityLogRepository.save(activityLog);
@@ -148,6 +147,6 @@ public class LostController {
     private boolean isAuthorizedToModify(Principal principal, LostItems lostItems) {
         String username = principal.getName();
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return lostItems.getCreatedBy().equals(username) || userDetails.getAuthorities().contains(new SimpleGrantedAuthority(Role.admin.name()));
+        return lostItems.getCreatedBy().equals(username) || userDetails.getAuthorities().contains(new SimpleGrantedAuthority("Roleadmin"));
     }
 }

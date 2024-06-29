@@ -71,20 +71,21 @@ public class FoundController {
     }
 
     @PutMapping("/found/{id}") //update data
-    public ResponseEntity<FoundItems> updateFound(@Valid @RequestBody FoundItems newFoundItems, @PathVariable Long id) {
-        FoundItems updatedItem = foundRepository.findById(id)
-                .map(foundItems -> {
-                    foundItems.setName(newFoundItems.getName());
-                    foundItems.setMobile_Number(newFoundItems.getMobile_Number());
-                    foundItems.setBus_Description(newFoundItems.getBus_Description());
-                    foundItems.setItem_Description(newFoundItems.getItem_Description());
-                    if (newFoundItems.getDateTime() != null) {
-                        foundItems.setDateTime(newFoundItems.getDateTime());
-                    } else {
-                        foundItems.setDateTime(LocalDateTime.now());
-                    }
-                    return foundRepository.save(foundItems);
-                }).orElseThrow(() -> new ItemNotFoundException(id));
+    public ResponseEntity<FoundItems> updateFound(@RequestBody FoundItems newFoundItems, @PathVariable Long id) {
+        FoundItems existingItem = foundRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException(id));
+
+
+        existingItem.setName(newFoundItems.getName());
+        existingItem.setMobile_Number(newFoundItems.getMobile_Number());
+        existingItem.setBus_Description(newFoundItems.getBus_Description());
+        existingItem.setItem_Description(newFoundItems.getItem_Description());
+        if (newFoundItems.getDateTime() != null) {
+            existingItem.setDateTime(newFoundItems.getDateTime());
+        } else {
+            existingItem.setDateTime(LocalDateTime.now());
+        }
+        FoundItems updatedItem = foundRepository.save(existingItem);
 
         activityLogRepository.findByActivityId(id).ifPresent(activityLog -> {
             activityLog.setDescription(newFoundItems.getItem_Description());
@@ -127,6 +128,6 @@ public class FoundController {
     private boolean isAuthorizedToModify(Principal principal, FoundItems foundItems){
         String username = principal.getName();
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return foundItems.getCreatedBy().equals(username) || userDetails.getAuthorities().contains(new SimpleGrantedAuthority(Role.admin.name()));
+        return foundItems.getCreatedBy().equals(username) || userDetails.getAuthorities().contains(new SimpleGrantedAuthority("Roleadmin"));
     }
 }
