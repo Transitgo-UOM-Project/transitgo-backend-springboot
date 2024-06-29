@@ -30,7 +30,7 @@ public class SecurityConfig {
             "/busstops",
             "/schedules",
             "/buses",
-            "/rates",
+            "/rates","/rates/*",
             "/forgot-password","/verify-otp","/new-password",
             "/losts","/founds"
     };
@@ -50,17 +50,17 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         request -> request
                                 .requestMatchers(PERMIT_ALL).permitAll()
-                                .requestMatchers(GET,"/bus/*","/bussched/*","/bus/search","/bus/*/stops","/bus/*/bustimetable","busstop/*","/route/*/stops","/busroute/*",
-                                                              "/rates/*").permitAll()
+                                .requestMatchers(GET,"/bus/*","/bussched/*","/bus/search","/bus/*/stops","/bus/*/bustimetable","busstop/*","/route/*/stops","/busroute/*").permitAll()
 
                         .requestMatchers("/admin/**").hasAnyAuthority("Roleadmin")
                         .requestMatchers(PUT,"/bus/*","/busStatus/*","/schedule/*","/busstop/*","/busroute/*").hasAnyAuthority("Roleadmin")
-                        .requestMatchers(DELETE,"/bus/*","/package/*","/busstop/*","/busroute/*").hasAnyAuthority("Roleadmin")
+                        .requestMatchers(DELETE,"/bus/*","/busstop/*","/busroute/*").hasAnyAuthority("Roleadmin")
                         .requestMatchers(POST,"/bus","/schedule","/bus/*/bustimetable","/busstop").hasAnyAuthority("Roleadmin")
                         .requestMatchers(GET,"/schedule/*","/busroute","/busroutes").hasAnyAuthority("Roleadmin")
 
                         .requestMatchers(GET,"/packages").hasAnyAuthority("Roleemployee","Roleadmin")
                         .requestMatchers(PUT,"/package/*").hasAnyAuthority("Roleemployee")
+                        .requestMatchers(DELETE,"/package/*").hasAnyAuthority("Roleadmin")
 
                         .requestMatchers(POST,"/verifyPassword/*").hasAnyAuthority("Rolepassenger")
                         .requestMatchers(DELETE,"/deleteUser/*").hasAnyAuthority("Rolepassenger")
@@ -68,14 +68,15 @@ public class SecurityConfig {
                         //.requestMatchers(GET,"/*/activity-logs").hasAnyAuthority("Rolepassenger","Roleemployee" )
 
                         .requestMatchers(PUT,"/admin-user/update/*").hasAnyAuthority("Roleadmin", "Rolepassenger", "Roleemployee")
-                        .requestMatchers(POST,"/rate/bus","/lost","/found","/announcement").hasAnyAuthority("Roleadmin", "Rolepassenger", "Roleemployee")
+                        .requestMatchers(POST,"/rate/bus","/lost","/found","/announcement","/package").hasAnyAuthority("Roleadmin", "Rolepassenger", "Roleemployee")
                         .requestMatchers(GET,"/employee/*").hasAnyAuthority("Roleadmin", "Rolepassenger", "Roleemployee")
 
                         .requestMatchers(GET,"/user/profile","/announcement/*","/lost/*","/found/*","/rate/*","/announcements").authenticated()
                         .requestMatchers(PUT,"/announcement/*","/lost/*","/found/*","/rate/*").authenticated()
                         .requestMatchers(DELETE,"/lost/*","/found/*","/rate/*","/announcement/*").authenticated()
-                        .requestMatchers("/api/user/*/activity-logs").hasAnyAuthority("Rolepassenger","Roleemployee")
-                        .anyRequest().authenticated()
+
+
+                        .requestMatchers("/api/user/*/activity-logs").hasAnyAuthority("Rolepassenger", "Roleemployee")
                          )
                          .exceptionHandling(exception -> exception
                                  .accessDeniedHandler(accessDeniedHandler)

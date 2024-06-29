@@ -95,12 +95,9 @@ public class PackageController {
 
         Package pac = packageRepository.findById(PackageID)
                 .orElseThrow(() -> new PackageNotFoundException(PackageID));
-        if (!isAuthorizedToModify(principal, pac)){
-            throw new UnauthorizedException("You are not authorized to update this review");
-        }
-
-
-        activityLogService.deleteActivityByActivityId(PackageID);
+//        if (!isAuthorizedToModify(principal, pac)){
+//            throw new UnauthorizedException("You are not authorized to update this review");
+//        }
         packageRepository.deleteById(PackageID);
         return "Package with id "+PackageID+" has been deleted successfully.";
     }
@@ -108,7 +105,7 @@ public class PackageController {
     private boolean isAuthorizedToModify(Principal principal, Package pac){
         String username = principal.getName();
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return pac.getCreatedBy().equals(username) || userDetails.getAuthorities().contains(new SimpleGrantedAuthority(Role.admin.name()));
+        return pac.getCreatedBy().equals(username) || userDetails.getAuthorities().contains(new SimpleGrantedAuthority("Roleadmin"));
     }
 
 
