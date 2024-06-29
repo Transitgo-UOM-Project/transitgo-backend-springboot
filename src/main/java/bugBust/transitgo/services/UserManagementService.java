@@ -175,4 +175,13 @@ public class UserManagementService {
         }
         return "Error Deleting User";
     }
+
+    public int userById(Long id){
+        Optional<User> response = userRepository.findById(id);
+        if (response.isPresent()){
+            User user = response.get();
+            return Integer.parseInt(user.getBusid());
+        }
+        return 0;
+    }
 }
