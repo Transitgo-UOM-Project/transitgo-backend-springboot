@@ -30,7 +30,7 @@ public class SecurityConfig {
             "/busstops",
             "/schedules",
             "/buses",
-            "/rates","/rates/*",
+            "/rates","/rates/*","/rate/*",
             "/announcements",
             "/forgot-password","/verify-otp","/new-password",
             "/losts","/founds"
