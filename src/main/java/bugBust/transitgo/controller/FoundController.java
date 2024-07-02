@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin("http://localhost:3000")  // to connect with frontend
+@CrossOrigin(origins = {"http://localhost:3000" , "http://localhost:8081"})
 public class FoundController {
     @Autowired  //to inject repository interface
     private FoundRepository foundRepository;

@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RestController
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000" , "http://localhost:8081"})
 public class BusMgtController {
     @Autowired
     private BusMgtRepository busmgtRepository;
