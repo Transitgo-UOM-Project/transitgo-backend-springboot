@@ -44,6 +44,12 @@ public class AuthenticationService {
             case "employee" -> role = Role.employee;
             default -> role = Role.passenger;
         }
+
+        if(role == Role.employee) {
+            if (repository.existsByBusid(request.getBusid())) {
+                throw new EmailAlreadyExistException("Bus already assigned");
+            }
+        }
             //Role role = Role.valueOf((userRole.equals("employee")) ?  "employee" : "passenger");
 
         var user = User.builder()
@@ -59,14 +65,15 @@ public class AuthenticationService {
                 .build();
         repository.save(user);
 
-        //generate verification token and send email
-        String token = UUID.randomUUID().toString();
-        user.setVerificationToken(token);
-        repository.save(user);
+        if (role == Role.passenger){
+            //generate verification token and send email
+            String token = UUID.randomUUID().toString();
+            user.setVerificationToken(token);
+            repository.save(user);
 
-        String confirmationURL = "http://localhost:3000/verify-email?token="+token;
-        emailService.sendEmail(user.getEmail(),"Email Verification", "Click the link to verify your email :"+confirmationURL);
-
+            String confirmationURL = "http://localhost:3000/verify-email?token="+token;
+            emailService.sendEmail(user.getEmail(),"Email Verification", "Click the link to verify your email :"+confirmationURL);
+        }
 
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
