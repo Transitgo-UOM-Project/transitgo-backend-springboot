@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000" , "http://localhost:8081"})
 public class BusTimeTableController {
     @Autowired
     private BusTimeTableRepository bustimetableRepository;

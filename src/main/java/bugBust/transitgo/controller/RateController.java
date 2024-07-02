@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @RestController
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000" , "http://localhost:8081"})
 public class RateController {
     @Autowired
     private RateRepository rateRepository;

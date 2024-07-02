@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000" , "http://localhost:8081"})
 public class ScheduleController {
     @Autowired
 private ScheduleRepository scheduleRepository;
