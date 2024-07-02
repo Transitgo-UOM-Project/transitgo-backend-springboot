@@ -36,10 +36,6 @@ public class AuthenticationService {
             throw new EmailAlreadyExistException("Email already in use");
         }
 
-        if (repository.existsByBusid(request.getBusid())){
-            throw new EmailAlreadyExistException("Bus already assigned");
-        }
-
         // Get the user's role from the request
             String userRole = request.getType();
             Role role = null;
@@ -47,6 +43,12 @@ public class AuthenticationService {
             case "admin" -> role = Role.admin;
             case "employee" -> role = Role.employee;
             default -> role = Role.passenger;
+        }
+
+        if(role == Role.employee) {
+            if (repository.existsByBusid(request.getBusid())) {
+                throw new EmailAlreadyExistException("Bus already assigned");
+            }
         }
             //Role role = Role.valueOf((userRole.equals("employee")) ?  "employee" : "passenger");
 
