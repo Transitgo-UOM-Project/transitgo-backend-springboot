@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000" , "http://localhost:8081"})
 public class PackageController {
     //Push data to database
 

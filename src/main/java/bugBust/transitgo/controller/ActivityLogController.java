@@ -16,7 +16,7 @@ import java.security.Principal;
 import java.util.List;
 
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000" , "http://localhost:8081"})
 @RestController
 @RequestMapping("/api/user")
 public class ActivityLogController {

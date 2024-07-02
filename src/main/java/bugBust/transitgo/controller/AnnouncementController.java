@@ -26,7 +26,7 @@ import static bugBust.transitgo.model.Role.admin;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000" , "http://localhost:8081"})
 public class AnnouncementController {
     @Autowired
     private AnnouncementRepository announcementRepository;
