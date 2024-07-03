@@ -34,6 +34,8 @@ public class BusMgtService {
             BusMgt busToUpdate = existingBus.get();
             busToUpdate.setDelay(bus.getDelay());
             busToUpdate.setLastLeftStop(bus.getLastLeftStop());
+            busToUpdate.setNextLocation(bus.getNextLocation());
+
             return busmgtRepository.save(busToUpdate);
         } else {
             return busmgtRepository.save(bus);

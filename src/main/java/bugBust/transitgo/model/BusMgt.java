@@ -51,6 +51,9 @@ public class BusMgt {
     private String delay;
     private String lastLeftStop;
 
+    private String nextLocation;
+
+
     public String getDelay() {
         return delay;
     }
@@ -63,9 +66,19 @@ public class BusMgt {
         return lastLeftStop;
     }
 
+    public String getNextLocation() {
+        return nextLocation;
+    }
+
+
     public void setLastLeftStop(String lastLeftStop) {
         this.lastLeftStop = lastLeftStop;
     }
+
+    public void setNextLocation(String nextLocation) {
+        this.nextLocation = nextLocation;
+    }
+
 
     @ManyToOne
     @JoinColumn(name = "routeno")
