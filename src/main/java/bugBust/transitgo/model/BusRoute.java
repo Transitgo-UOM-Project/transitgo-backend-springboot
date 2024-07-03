@@ -3,6 +3,9 @@ package bugBust.transitgo.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
 
 @Entity
@@ -11,6 +14,9 @@ public class BusRoute {
     @Id
     @Column(name="routeno")
     private int routeno;
+
+    @NotNull(message="Route Name is required")
+    @NotBlank(message = "Route Name is required ")
     private String routename;
 
 

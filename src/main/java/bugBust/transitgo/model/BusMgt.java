@@ -4,6 +4,8 @@ package bugBust.transitgo.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -15,6 +17,8 @@ public class BusMgt {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int Id;
 
+    @NotNull(message="Bus Reg No. is required")
+    @NotBlank(message = "Bus Reg No. is required ")
     @Column(unique = true)
     private String regNo;
 
@@ -78,6 +82,7 @@ public class BusMgt {
     public void setNextLocation(String nextLocation) {
         this.nextLocation = nextLocation;
     }
+
 
 
     @ManyToOne
