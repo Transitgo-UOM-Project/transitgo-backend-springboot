@@ -51,7 +51,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         request -> request
                                 .requestMatchers(PERMIT_ALL).permitAll()
-                                .requestMatchers(GET,"/bus/*","/bussched/*","/bus/search","/bus/*/stops","/bus/*/bustimetable","busstop/*","/route/*/stops","/busroute/*").permitAll()
+                                .requestMatchers(GET,"/bus/*","/bussched/*","/bus/search","/bus/*/stops","/bus/*/bustimetable","busstop/*","/route/*/stops","/busroute/*" ,"/package/*").permitAll()
 
                         .requestMatchers("/admin/**").hasAnyAuthority("Roleadmin")
                         .requestMatchers(PUT,"/bus/*","/busStatus/*","/schedule/*","/busstop/*","/busroute/*","/busstoplocation/*").hasAnyAuthority("Roleadmin")
