@@ -146,7 +146,7 @@ public class Package {
     }
 
     @NotNull(message = "Contact number is required")
-    @Pattern(regexp = "^[0-9]{10}$",message = "Phone number should be 10 digits")
+    @Pattern(regexp = "^[0-9]{9,10}$",message = "Phone number should be 10 digits")
     private String ReceiverContact;
     private String Payment;
     private String Status;

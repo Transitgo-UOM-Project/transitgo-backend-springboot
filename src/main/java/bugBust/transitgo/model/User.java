@@ -21,6 +21,7 @@ import java.util.List;
 @Getter
 @Setter
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Table(name = "[User]")
 public class User implements UserDetails {
 
     @Id
