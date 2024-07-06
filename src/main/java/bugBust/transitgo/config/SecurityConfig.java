@@ -67,7 +67,7 @@ public class SecurityConfig {
                         .requestMatchers(POST,"/bus").hasAnyAuthority("Roleemployee","Roleadmin")
 
                         .requestMatchers(PUT,"/package/*").hasAnyAuthority("Roleemployee")
-                        .requestMatchers(GET,"/userBus/*").hasAnyAuthority("Roleemployee")
+                        .requestMatchers(GET,"/userBus/*","/userBus").hasAnyAuthority("Roleemployee")
 
                         .requestMatchers(POST,"/verifyPassword/*").hasAnyAuthority("Rolepassenger")
                         .requestMatchers(DELETE,"/deleteUser/*").hasAnyAuthority("Rolepassenger")

@@ -25,6 +25,7 @@ public class Announcement {
     }
 
     private String createdBy;
+    @Column(name = "[user]")
     private String user;
 
     @PrePersist
