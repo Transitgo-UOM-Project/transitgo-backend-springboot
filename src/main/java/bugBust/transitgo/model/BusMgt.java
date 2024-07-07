@@ -24,6 +24,7 @@ public class BusMgt {
 
     private String status;
 
+
     public String getStatus() {
         return status;
     }
