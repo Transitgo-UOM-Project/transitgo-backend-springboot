@@ -44,7 +44,9 @@ public class AnnouncementController {
         Optional<User> user = userRepository.findByEmail(userMail);
         if (user.isPresent()){
             String username = user.get().getUname();
+            String userRole = user.get().getType().name();
             newAnnouncement.setUser(username);
+            newAnnouncement.setCreatedByRole(userRole);
         }
 
         newAnnouncement.setCreatedBy(principal.getName());
