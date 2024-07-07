@@ -20,8 +20,7 @@ public class BusStop {
     @JoinColumn(name = "routeno")
     private BusRoute busroute;
 
-    @NotNull(message="Stop Order Index Name is required")
-    @NotBlank(message = "Stop Order  Index is required ")
+
     private int orderIndex;
 
 
