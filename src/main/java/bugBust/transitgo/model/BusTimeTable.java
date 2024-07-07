@@ -13,11 +13,9 @@ public class BusTimeTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotNull(message="Bus Id. is required")
-    @NotBlank(message = "Bus Id. is required ")
+
     private int busId;
-    @NotNull(message="Date is required")
-    @NotBlank(message = "Date is required ")
+
     private LocalDate date;
     @NotNull(message="Status is required")
     @NotBlank(message = "Status is required ")

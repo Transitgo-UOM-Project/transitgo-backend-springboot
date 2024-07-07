@@ -3,8 +3,7 @@ package bugBust.transitgo.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+
 
 import java.time.LocalTime;
 
@@ -23,8 +22,7 @@ public class Schedule {
     @JoinColumn(name = "stop_id")
     private BusStop busStop;
 
-    @NotNull(message="Bus Direction is required")
-    @NotBlank(message = "Bus Direction is required ")
+
     private String direction;
 
     public String getDirection() {
