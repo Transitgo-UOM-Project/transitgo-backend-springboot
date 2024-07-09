@@ -24,7 +24,7 @@ public class BusStatusUpdateService {
         this.scheduleService = scheduleService;
     }
 
-    @Scheduled(fixedRate = 15000) // Example rate, update as needed
+    @Scheduled(fixedRate = 15000)  // 15 seconds
     @Transactional
     public void updateBusStatusFromTimeTable() {
         logger.info("Executing scheduled task to update bus statuses.");
@@ -51,13 +51,24 @@ public class BusStatusUpdateService {
         if (isWithinTimeRange(now, startTime, endTime)) {
             logger.info("Setting status for bus {} to {}", bus.getId(), direction);
             bus.setStatus(direction);
-        } else if (bus.getStatus().equals(direction)) {
-            logger.info("Bus {} is no longer within time range, setting status to 'off'", bus.getId());
-            bus.setStatus("off");
+        } else {
+            if (isOutsideTimeRangeByMoreThan30Minutes(now, startTime, endTime)) {
+                logger.info("Bus {} is no longer within time range of 30 minutes from start and end time, setting status to 'off'", bus.getId());
+                bus.setStatus("off");
+            }
+            else {
+                logger.info("Bus {} is within time range of 30 minutes from start and end time , setting status to {}", bus.getId(),direction);
+                bus.setStatus(direction);
+            }
         }
     }
 
     private boolean isWithinTimeRange(LocalTime now, LocalTime startTime, LocalTime endTime) {
         return (now.isAfter(startTime) || now.equals(startTime)) && (now.isBefore(endTime) || now.equals(endTime));
     }
+
+    private boolean isOutsideTimeRangeByMoreThan30Minutes(LocalTime now, LocalTime startTime, LocalTime endTime) {
+        return now.isAfter(endTime.plusMinutes(30)) || now.isBefore(startTime.minusMinutes(30));
+    }
+
 }

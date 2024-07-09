@@ -110,7 +110,7 @@ public class BusMgtService {
                 return getStatusFromPreviousWeek(busid, date.minusWeeks(1), direction);
             } else {
                 logger.warn("Reached limit of 4 weeks in the past for bus {} on date {}", busid, date);
-                return null; // Or handle accordingly based on your application's logic
+                return null;
             }
         } else {
             // Filter statuses by direction
@@ -118,7 +118,7 @@ public class BusMgtService {
                     .filter(status -> status.equals(direction))
                     .findFirst();
 
-            return matchingStatus.orElse(null); // Return matching status or null if not found
+            return matchingStatus.orElse(null);
         }
     }
 
