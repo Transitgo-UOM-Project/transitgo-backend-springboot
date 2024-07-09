@@ -13,8 +13,8 @@ public class BusStatusUpdateTask {
         this.busMgtService = busMgtService;
     }
 
-    @Scheduled(fixedRate = 15000) // Runs every minute, adjust as needed
-    public void updateBusStatus() {
-        busMgtService.updateBusStatusFromTimeTable();
-    }
+//    @Scheduled(fixedRate = 15000) // Runs every minute, adjust as needed
+//    public void updateBusStatus() {
+//        busMgtService.updateBusStatusFromTimeTable();
+//    }
 }

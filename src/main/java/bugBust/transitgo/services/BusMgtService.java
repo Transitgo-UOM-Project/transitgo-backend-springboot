@@ -26,6 +26,9 @@ public class BusMgtService {
     @Autowired
     private BusMgtRepository busmgtRepository;
 
+    @Autowired
+    private BusTimeTableRepository busTimeTableRepository;
+
     private static final Logger logger = LoggerFactory.getLogger(BusMgtService.class);
 
     public BusMgt saveOrUpdateABus(BusMgt bus) {
@@ -55,11 +58,9 @@ public class BusMgtService {
         try {
             List<BusMgt> buses = busmgtRepository.findAll().stream()
                     .filter(bus -> {
-                        if (bus.getStatus().equals("off")) {
-                            return false;
-                        }
+                        logger.info("For Bus {}", bus.getRegNo());
                         // Check if status from BusTimeTable on specific date matches direction
-                        String statusOnDate = getStatusFromBusTimeTable(bus.getId(), date);
+                        String statusOnDate = getStatusFromBusTimeTable(bus.getId(), date, direction);
                         logger.info("Status on Date is {}", statusOnDate);
                         boolean matchesDirection = statusOnDate != null && statusOnDate.equals(direction);
                         logger.info("Whether direction {} on date {} is {}", direction, date, matchesDirection);
@@ -77,61 +78,58 @@ public class BusMgtService {
         }
     }
 
-    private String findPreviousWeekStatus(int busid, LocalDate date) {
-        LocalDate previousDate = date;
-        logger.info("previousDate is {} for bus id {}" , previousDate,busid);
-        while (true) {
-            List<BusTimeTable> previousStatuses = busTimeTableRepository.findLatestStatusBeforeDate(busid, previousDate);
-            logger.info("pre xnxxxuuuxxxx  get  0 {} ",previousStatuses.get(0).getStatus());
+    private String getStatusFromBusTimeTable(int busid, LocalDate date, String direction) {
+        List<String> statuses = busTimeTableRepository.findStatusByBusIdAndDate(busid, date);
 
+        if (statuses.isEmpty()) {
+            logger.info("No status found for bus {} on date {}", busid, date);
+            LocalDate previousDate = date.minusWeeks(1);
+            return getStatusFromPreviousWeek(busid, previousDate, direction);
+        } else if (statuses.size() > 1) {
+            logger.warn("Multiple statuses found for bus {} on date {}", busid, date);
+            // Filter statuses by direction
+            Optional<String> matchingStatus = statuses.stream()
+                    .filter(status -> status.equals(direction))
+                    .findFirst();
 
-            if (!previousStatuses.isEmpty()) {
-                return previousStatuses.get(0).getStatus();
+            return matchingStatus.orElse(null); // Return matching status or null if not found
+        } else {
+            // Only one status found, return it if it matches the direction
+            return statuses.get(0).equals(direction) ? statuses.get(0) : null;
+        }
+    }
+
+    private String getStatusFromPreviousWeek(int busid, LocalDate date, String direction) {
+        logger.info("Fetching status from previous week for bus {} on date {}", busid, date);
+        List<String> statuses = busTimeTableRepository.findStatusByBusIdAndDate(busid, date);
+
+        if (statuses.isEmpty()) {
+            logger.info("No status found for bus {} on previous week date {}", busid, date);
+            // Recursively check previous weeks until a status is found or limit is reached
+            if (!date.isBefore(LocalDate.now().minusWeeks(4))) { // Limit to 4 weeks in the past
+                return getStatusFromPreviousWeek(busid, date.minusWeeks(1), direction);
+            } else {
+                logger.warn("Reached limit of 4 weeks in the past for bus {} on date {}", busid, date);
+                return null;
             }
-            previousDate = previousDate.minusWeeks(1);
+        } else {
+            // Filter statuses by direction
+            Optional<String> matchingStatus = statuses.stream()
+                    .filter(status -> status.equals(direction))
+                    .findFirst();
+
+            return matchingStatus.orElse(null);
         }
     }
-
-//    private String getStatusFromBusTimeTable(int busId, LocalDate date) {
-//        // Implement logic to fetch status from BusTimeTable for given busId and date
-//        return busTimeTableRepository.findStatusByBusIdAndDate(busId, date);
-//    }
-
-    private String getStatusFromBusTimeTable(
-            int busid,
-           LocalDate date) {
-
-        String status = busTimeTableRepository.findStatusByBusIdAndDate(busid, date);
-logger.info("status  is {}" , status);
-        if (status == null) {
-            logger.info("status  is null so coming in" );
-            status = findPreviousWeekStatus(busid, date);
-        }
-
-        return status;
-    }
-
-
-    // Inside BusMgtService
-
-    @Autowired
-    private BusTimeTableRepository busTimeTableRepository;
-
-    @Transactional // Ensure the transactional context to avoid detached entity issues
-    public void updateBusStatusFromTimeTable() {
-        Iterable<BusMgt> allBuses = busmgtRepository.findAll();
-        for (BusMgt bus : allBuses) {
-            List<BusTimeTable> timeTables = busTimeTableRepository.findByBusId(bus.getId());
-            //logger.info("Time table for a bus - {} is {}", bus ,timeTables);
-            bus.updateStatusFromTimeTable(timeTables);
-           // logger.info("Found {} bus changed to {}", bus ,bus.getStatus());
-            busmgtRepository.save(bus);
-        }
-    }
-
-
-
-
 
 }
+
+
+
+
+
+
+
+
+
 
