@@ -26,7 +26,7 @@ public class LostItems {
     @GeneratedValue
     private Long id;
 
-    @Pattern(regexp = "^[a-zA-Z]+$", message = "Name must contain only alphabetic characters")
+    @Pattern(regexp = "^[a-zA-Z ]+$", message = "Name must contain only alphabetic characters and spaces")
     private String name;
 
     @Pattern(regexp = "^(0?7(0|1|2|5|6|7|8)\\d{7})$", message = "Invalid mobile number")

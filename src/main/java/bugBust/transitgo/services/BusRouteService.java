@@ -1,6 +1,7 @@
 //BusRouteService.java
 package bugBust.transitgo.services;
 
+import bugBust.transitgo.exception.RouteAlreadyExistsException;
 import bugBust.transitgo.model.BusRoute;
 import bugBust.transitgo.model.BusStop;
 import bugBust.transitgo.repository.BusRouteRepository;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BusRouteService {
@@ -20,6 +22,10 @@ public class BusRouteService {
     private BusStopRepository busStopRepository;
 
     public BusRoute saveOrUpdateABusRoute(BusRoute busRoute) {
+        Optional<BusRoute> existingRoute = busRouteRepository.findById(busRoute.getRouteno());
+        if (existingRoute.isPresent()) {
+            throw new RouteAlreadyExistsException("Route number " + busRoute.getRouteno() + " already exists.");
+        }
         return busRouteRepository.save(busRoute);
     }
 
