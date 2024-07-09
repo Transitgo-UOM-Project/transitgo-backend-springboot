@@ -15,5 +15,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule,Integer> {
     List<Schedule> findByBusIdAndDirection(int bus_id , String direction) ;
 
 
+
 Schedule getByscheduleId(Integer scheduleId);
 }

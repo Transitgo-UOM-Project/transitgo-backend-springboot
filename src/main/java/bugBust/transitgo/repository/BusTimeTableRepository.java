@@ -16,27 +16,8 @@ public interface BusTimeTableRepository extends CrudRepository<BusTimeTable, Int
     List<BusTimeTable> findByBusIdAndDateBetween(int busId, LocalDate startDate, LocalDate endDate);
 
     @Query("SELECT b.status FROM BusTimeTable b WHERE b.busId = :busId AND b.date = :date")
-    String findStatusByBusIdAndDate(int busId, LocalDate date);
-    List<BusTimeTable> findByBusId(int busId);
+    List <String> findStatusByBusIdAndDate(int busId, LocalDate date);
 
-    @Query(value = "WITH RECURSIVE DateSeries AS ( " +
-            "    SELECT :date - INTERVAL '7' DAY AS date " +
-            "    UNION ALL " +
-            "    SELECT date - INTERVAL '7' DAY " +
-            "    FROM DateSeries " +
-            "    WHERE date - INTERVAL '7' DAY >= (SELECT MIN(b.date) FROM bus_time_table b WHERE b.bus_id = :busId) " +
-            ") " +
-            "SELECT b.* " +
-            "FROM bus_time_table b " +
-            "JOIN DateSeries d " +
-            "ON b.date = d.date " +
-            "WHERE b.bus_id = :busId " +
-            "ORDER BY b.date DESC",
-            nativeQuery = true)
-    List<BusTimeTable> findLatestStatusBeforeDate(@Param("busId") int busId, @Param("date") LocalDate date);
 
-//    @Transactional
-//    @Modifying
-//    @Query("DELETE FROM BusTimeTable b WHERE b.date < :today")
-//    void deletePastSchedules(LocalDate today);
+
 }

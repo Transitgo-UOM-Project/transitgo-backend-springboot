@@ -84,7 +84,16 @@ public class BusMgt {
         this.nextLocation = nextLocation;
     }
 
+    @NotNull(message="Number of Journeys per Day is required")
+    private int noOfJourneysPerDay;
 
+    public int getNoOfJourneysPerDay() {
+        return noOfJourneysPerDay;
+    }
+
+    public void setNoOfJourneysPerDay(int noOfJourneysPerDay) {
+        this.noOfJourneysPerDay = noOfJourneysPerDay;
+    }
 
     @ManyToOne
     @JoinColumn(name = "routeno")
@@ -148,37 +157,6 @@ public class BusMgt {
         this.regNo = regNo;
     }
 
-
-    public void updateStatusFromTimeTable(List<BusTimeTable> timeTables) {
-        LocalDate today = LocalDate.now();
-        LocalDate dateToCheck = today;
-        String statusToUpdate = null;
-
-        // Loop until a valid status is found or all dates are checked
-        while (statusToUpdate == null) {
-            LocalDate finalDateToCheck = dateToCheck;  // Make a final copy of dateToCheck for the lambda
-            // Find the BusTimeTable entry for the current date to check
-            BusTimeTable timeTable = timeTables.stream()
-                    .filter(t -> t.getDate().isEqual(finalDateToCheck))
-                    .findFirst()
-                    .orElse(null);
-
-            if (timeTable != null) {
-                statusToUpdate = timeTable.getStatus();
-            } else {
-                // Go back one week
-                dateToCheck = dateToCheck.minusWeeks(1);
-
-                LocalDate limit = LocalDate.of(2024, 6, 10);
-                if (dateToCheck.isBefore(limit)) {
-                    break;
-                }
-            }
-        }
-
-        // Update the status with the found status or default to "off" if no valid status was found
-        this.status = (statusToUpdate != null) ? statusToUpdate : "off";
-    }
 
 
 
