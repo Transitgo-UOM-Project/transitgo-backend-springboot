@@ -3,6 +3,7 @@ package bugBust.transitgo.services;
 import bugBust.transitgo.config.JwtService;
 import bugBust.transitgo.dto.UserDto;
 import bugBust.transitgo.model.User;
+import bugBust.transitgo.repository.ActivityLogRepository;
 import bugBust.transitgo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +21,7 @@ public class UserManagementService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final  ActivityLogRepository activityLogRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
@@ -170,6 +172,7 @@ public class UserManagementService {
         if (userOptional.isPresent()){
             User user = userOptional.get();
             Long id = user.getId();
+            activityLogRepository.deleteByUserId(id);
             userRepository.deleteById(id);
             return "User Deleted";
         }

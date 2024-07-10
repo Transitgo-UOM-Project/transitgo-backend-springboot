@@ -78,7 +78,7 @@ public class PackageController {
                     aPackage.setStatus(newPackage.getStatus());
                     return packageRepository.save(aPackage);
                 }).orElseThrow(()->new PackageNotFoundException(PackageID));
-        activityLogRepository.findByActivityId(PackageID).ifPresent(activityLog -> {
+        activityLogRepository.findByActivityIdAndActivityType(PackageID, "Package").ifPresent(activityLog -> {
             activityLog.setPacStatus(newPackage.getStatus());
             activityLogRepository.save(activityLog);
         });
