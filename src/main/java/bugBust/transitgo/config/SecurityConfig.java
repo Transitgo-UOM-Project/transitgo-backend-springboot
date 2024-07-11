@@ -74,9 +74,9 @@ public class SecurityConfig {
 
                         .requestMatchers(PUT,"/admin-user/update/*").hasAnyAuthority("Roleadmin", "Rolepassenger", "Roleemployee")
                         .requestMatchers(POST,"/rate/bus","/lost","/found","/announcement","/package").hasAnyAuthority("Roleadmin", "Rolepassenger", "Roleemployee")
-                        .requestMatchers(GET,"/employee/*","/user/profile").hasAnyAuthority("Roleadmin", "Rolepassenger", "Roleemployee")
+                        .requestMatchers(GET,"/employee/*","/user/profile","/announcement/*").hasAnyAuthority("Roleadmin", "Rolepassenger", "Roleemployee")
 
-                        .requestMatchers(GET,"/user/profile","/announcement/*","/lost/*","/found/*","/rate/*").authenticated()
+                        .requestMatchers(GET,"/user/profile","/lost/*","/found/*","/rate/*").authenticated()
                         .requestMatchers(PUT,"/announcement/*","/lost/*","/found/*","/rate/*").authenticated()
                         .requestMatchers(DELETE,"/lost/*","/found/*","/rate/*","/announcement/*").authenticated()
 

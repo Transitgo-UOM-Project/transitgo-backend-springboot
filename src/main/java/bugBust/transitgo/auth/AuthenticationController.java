@@ -2,6 +2,7 @@ package bugBust.transitgo.auth;
 
 import bugBust.transitgo.exception.EmailAlreadyExistException;
 import bugBust.transitgo.exception.InvalidEmailOrPasswordException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -19,9 +20,10 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
-        @RequestBody RegisterRequest request
+        @RequestBody RegisterRequest request,
+        HttpServletRequest httpServletRequest
     ) throws EmailAlreadyExistException {
-        return ResponseEntity.ok(service.register(request));
+        return ResponseEntity.ok(service.register(request,httpServletRequest));
     }
 
     @PostMapping("/authentication")

@@ -11,8 +11,10 @@ import java.util.Optional;
 public interface ActivityLogRepository extends JpaRepository<ActivityLog, Long> {
     List<ActivityLog> findByUserIdOrderByDateTimeDesc(Long userid);
 
-    void deleteByActivityId(Long activityId);
+    void deleteByActivityIdAndActivityType(Long activityId, String ActivityType);
 
-   Optional<ActivityLog> findByActivityId(Long activityId);
+    void deleteByUserId(Long id);
+
+   Optional<ActivityLog> findByActivityIdAndActivityType(Long activityId, String ActivityType);
 
 }

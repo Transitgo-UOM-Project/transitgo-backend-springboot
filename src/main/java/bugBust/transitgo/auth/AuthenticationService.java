@@ -7,14 +7,22 @@ import bugBust.transitgo.model.Role;
 import bugBust.transitgo.model.User;
 import bugBust.transitgo.repository.UserRepository;
 import bugBust.transitgo.services.EmailService;
+import bugBust.transitgo.services.UserManagementService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+
+import javax.swing.text.html.Option;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -30,7 +38,7 @@ public class AuthenticationService {
 
 
 
-    public AuthenticationResponse register(RegisterRequest request) throws EmailAlreadyExistException {
+    public AuthenticationResponse register(RegisterRequest request, HttpServletRequest httpServletRequest) throws EmailAlreadyExistException {
 
         if (repository.existsByEmail(request.getEmail())){
             throw new EmailAlreadyExistException("Email already in use");
@@ -61,7 +69,7 @@ public class AuthenticationService {
                 .busid(request.getBusid())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .type(role)
-                .enabled(false)//email.v
+                .enabled(true)//email.v
                 .build();
         repository.save(user);
 
@@ -69,10 +77,18 @@ public class AuthenticationService {
             //generate verification token and send email
             String token = UUID.randomUUID().toString();
             user.setVerificationToken(token);
+            user.setEnabled(false);
             repository.save(user);
 
-            String confirmationURL = "http://localhost:3000/verify-email?token="+token;
-            emailService.sendEmail(user.getEmail(),"Email Verification", "Click the link to verify your email :"+confirmationURL);
+            String origin = httpServletRequest.getHeader("Origin");
+            String confirmationURL;
+            if ("http://localhost:8081".equals(origin)) {
+                confirmationURL = "http://localhost:8081/verify-email?token=" + token;
+            } else {
+                confirmationURL = "http://localhost:3000/verify-email?token=" + token;
+            }
+
+            emailService.sendEmail(user.getEmail(),"TransitGo Account Verification", "Hi "+request.getUname()+" Click the link to verify your email : "+confirmationURL);
         }
 
         var jwtToken = jwtService.generateToken(user);
@@ -82,24 +98,34 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) throws InvalidEmailOrPasswordException {
-    try {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                ));
-    }catch (BadCredentialsException e) {
-        throw new InvalidEmailOrPasswordException("Invalid Email or Password");
-    }
-        var user = repository.findByEmail(request.getEmail())
-                .orElseThrow(()->new InvalidEmailOrPasswordException("Invalid Email or Password"));
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    ));
 
-        var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .user(user)
-                .build();
+            var user = repository.findByEmail(request.getEmail())
+                    .orElseThrow(() -> new InvalidEmailOrPasswordException("Invalid Email or Password"));
+
+            if (!user.isEnabled()) {
+                throw new InvalidEmailOrPasswordException("User is not enabled. Please verify your email.");
+            }
+
+            var jwtToken = jwtService.generateToken(user);
+            return AuthenticationResponse.builder()
+                    .token(jwtToken)
+                    .user(user)
+                    .build();
+        } catch (BadCredentialsException e) {
+            throw new InvalidEmailOrPasswordException("Invalid Email or Password");
+        } catch (InvalidEmailOrPasswordException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new InvalidEmailOrPasswordException("An unexpected error occurred during authentication, User Email not Verified");
+        }
     }
+
 
     public String validateVerificationToken(String token){
         User user = repository.findByVerificationToken(token).orElse(null);

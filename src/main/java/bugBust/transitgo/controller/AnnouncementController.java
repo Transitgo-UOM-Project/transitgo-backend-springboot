@@ -84,7 +84,7 @@ public class AnnouncementController {
         }
 
         announcementRepository.deleteById(id);
-        activityLogService.deleteActivityByActivityId(id);
+        activityLogService.deleteActivityByActivityId(id, "Announcement");
         return "Announcement deleted successfully.";
     }
 
@@ -95,7 +95,7 @@ public class AnnouncementController {
                     announcement.setDetails(newAnnouncement.getDetails());
                     
                     //update activity log
-                    activityLogRepository.findByActivityId(id).ifPresent(activityLog -> {
+                    activityLogRepository.findByActivityIdAndActivityType(id, "Announcement").ifPresent(activityLog -> {
                         activityLog.setDescription(newAnnouncement.getDetails());
                         activityLogRepository.save(activityLog);
                     });
