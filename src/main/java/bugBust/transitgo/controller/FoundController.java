@@ -72,27 +72,31 @@ public class FoundController {
 
     @PutMapping("/found/{id}") //update data
     public ResponseEntity<FoundItems> updateFound(@RequestBody FoundItems newFoundItems, @PathVariable Long id) {
-        FoundItems existingItem = foundRepository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException(id));
+        try {
+            FoundItems existingItem = foundRepository.findById(id)
+                    .orElseThrow(() -> new ItemNotFoundException(id));
 
 
-        existingItem.setName(newFoundItems.getName());
-        existingItem.setMobile_Number(newFoundItems.getMobile_Number());
-        existingItem.setBus_Description(newFoundItems.getBus_Description());
-        existingItem.setItem_Description(newFoundItems.getItem_Description());
-        if (newFoundItems.getDateTime() != null) {
-            existingItem.setDateTime(newFoundItems.getDateTime());
-        } else {
-            existingItem.setDateTime(LocalDateTime.now());
+            existingItem.setName(newFoundItems.getName());
+            existingItem.setMobile_Number(newFoundItems.getMobile_Number());
+            existingItem.setBus_Description(newFoundItems.getBus_Description());
+            existingItem.setItem_Description(newFoundItems.getItem_Description());
+            if (newFoundItems.getDateTime() != null) {
+                existingItem.setDateTime(newFoundItems.getDateTime());
+            } else {
+                existingItem.setDateTime(LocalDateTime.now());
+            }
+            FoundItems updatedItem = foundRepository.save(existingItem);
+
+            activityLogRepository.findByActivityIdAndActivityType(id, "Found Item").ifPresent(activityLog -> {
+                activityLog.setDescription(newFoundItems.getItem_Description());
+                activityLogRepository.save(activityLog);
+            });
+
+            return ResponseEntity.ok(updatedItem);
+        }catch (ItemNotFoundException e) {
+            return ResponseEntity.status(404).body(null);
         }
-        FoundItems updatedItem = foundRepository.save(existingItem);
-
-        activityLogRepository.findByActivityId(id).ifPresent(activityLog -> {
-            activityLog.setDescription(newFoundItems.getItem_Description());
-            activityLogRepository.save(activityLog);
-        });
-
-        return ResponseEntity.ok(updatedItem);
     }
 
     @DeleteMapping("/found/{id}") //delete data
@@ -107,7 +111,7 @@ public class FoundController {
         }
 
         foundRepository.deleteById(id);
-        activityLogService.deleteActivityByActivityId(id);
+        activityLogService.deleteActivityByActivityId(id, "Found Item");
 
         return ResponseEntity.ok("Item with id " + id + " has been deleted successfully");
     }

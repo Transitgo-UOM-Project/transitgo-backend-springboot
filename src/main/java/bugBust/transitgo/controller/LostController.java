@@ -83,7 +83,7 @@ public class LostController {
     }
 
     @PutMapping("/lost/{id}")
-    public ResponseEntity<LostItems> updateLost(@Valid @RequestBody LostItems newLostItems, @PathVariable Long id,Principal principal) {
+    public ResponseEntity<LostItems> updateLost(@Valid @RequestBody LostItems newLostItems, @PathVariable Long id) {
         try {
             LostItems existingItem = lostRepository.findById(id)
                     .orElseThrow(() -> new ItemNotFoundException(id));
@@ -100,7 +100,7 @@ public class LostController {
             LostItems updatedItem = lostRepository.save(existingItem);
 
             // Update activity log
-            activityLogRepository.findByActivityId(id).ifPresent(activityLog -> {
+            activityLogRepository.findByActivityIdAndActivityType(id, "Lost Item").ifPresent(activityLog -> {
                 activityLog.setDescription(newLostItems.getItem_Description());
                 activityLogRepository.save(activityLog);
             });
@@ -124,7 +124,7 @@ public class LostController {
         }
 
         lostRepository.deleteById(id);
-        activityLogService.deleteActivityByActivityId(id);
+        activityLogService.deleteActivityByActivityId(id, "Lost Item");
         return ResponseEntity.ok("Item with id " + id + " has been deleted successfully");
     }
 

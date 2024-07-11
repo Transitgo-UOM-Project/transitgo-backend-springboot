@@ -38,8 +38,8 @@ public class ActivityLogService {
     }
 
     @Transactional
-    public void deleteActivityByActivityId(Long activityId){
+    public void deleteActivityByActivityId(Long activityId, String ActivityType){
 
-        activityLogRepository.deleteByActivityId(activityId);
+        activityLogRepository.deleteByActivityIdAndActivityType(activityId, ActivityType);
     }
 }

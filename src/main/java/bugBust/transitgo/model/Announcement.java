@@ -25,7 +25,9 @@ public class Announcement {
     }
 
     private String createdBy;
+
     private String createdByRole;
+
     @Column(name = "[user]")
     private String user;
 
