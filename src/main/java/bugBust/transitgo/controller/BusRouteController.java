@@ -4,6 +4,7 @@ package bugBust.transitgo.controller;
 
 
 
+import bugBust.transitgo.exception.RouteAlreadyExistsException;
 import bugBust.transitgo.model.BusRoute;
 import bugBust.transitgo.repository.BusRouteRepository;
 import bugBust.transitgo.services.BusRouteService;
@@ -25,7 +26,11 @@ public class BusRouteController {
 
     @PostMapping("/busroute")
     public ResponseEntity<BusRoute> addARoute(@RequestBody BusRoute busroute) {
-        return new ResponseEntity<BusRoute>(busRouteService.saveOrUpdateABusRoute(busroute), HttpStatus.CREATED);
+        try {
+            return new ResponseEntity<>(busRouteService.saveOrUpdateABusRoute(busroute), HttpStatus.CREATED);
+        } catch (RouteAlreadyExistsException e) {
+            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+        }
     }
     @GetMapping("/busroutes")
     public Iterable<BusRoute> getAllRoutes(){

@@ -122,13 +122,6 @@ public class Package {
         ReceiverContact = receiverContact;
     }
 
-    public String getPayment() {
-        return Payment;
-    }
-
-    public void setPayment(String payment) {
-        Payment = payment;
-    }
 
     public String getStatus() {
         return Status;
@@ -146,8 +139,8 @@ public class Package {
     }
 
     @NotNull(message = "Contact number is required")
-    @Pattern(regexp = "^[0-9]{10}$",message = "Phone number should be 10 digits")
+    @Pattern(regexp = "^[0-9]{9,10}$",message = "Phone number should be 10 digits")
     private String ReceiverContact;
-    private String Payment;
+
     private String Status;
 }

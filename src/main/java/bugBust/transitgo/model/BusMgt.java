@@ -4,6 +4,8 @@ package bugBust.transitgo.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -15,10 +17,13 @@ public class BusMgt {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int Id;
 
+    @NotNull(message="Bus Reg No. is required")
+    @NotBlank(message = "Bus Reg No. is required ")
     @Column(unique = true)
     private String regNo;
 
     private String status;
+
 
     public String getStatus() {
         return status;
@@ -51,6 +56,9 @@ public class BusMgt {
     private String delay;
     private String lastLeftStop;
 
+    private String nextLocation;
+
+
     public String getDelay() {
         return delay;
     }
@@ -63,8 +71,28 @@ public class BusMgt {
         return lastLeftStop;
     }
 
+    public String getNextLocation() {
+        return nextLocation;
+    }
+
+
     public void setLastLeftStop(String lastLeftStop) {
         this.lastLeftStop = lastLeftStop;
+    }
+
+    public void setNextLocation(String nextLocation) {
+        this.nextLocation = nextLocation;
+    }
+
+    @NotNull(message="Number of Journeys per Day is required")
+    private int noOfJourneysPerDay;
+
+    public int getNoOfJourneysPerDay() {
+        return noOfJourneysPerDay;
+    }
+
+    public void setNoOfJourneysPerDay(int noOfJourneysPerDay) {
+        this.noOfJourneysPerDay = noOfJourneysPerDay;
     }
 
     @ManyToOne
@@ -129,37 +157,6 @@ public class BusMgt {
         this.regNo = regNo;
     }
 
-
-    public void updateStatusFromTimeTable(List<BusTimeTable> timeTables) {
-        LocalDate today = LocalDate.now();
-        LocalDate dateToCheck = today;
-        String statusToUpdate = null;
-
-        // Loop until a valid status is found or all dates are checked
-        while (statusToUpdate == null) {
-            LocalDate finalDateToCheck = dateToCheck;  // Make a final copy of dateToCheck for the lambda
-            // Find the BusTimeTable entry for the current date to check
-            BusTimeTable timeTable = timeTables.stream()
-                    .filter(t -> t.getDate().isEqual(finalDateToCheck))
-                    .findFirst()
-                    .orElse(null);
-
-            if (timeTable != null) {
-                statusToUpdate = timeTable.getStatus();
-            } else {
-                // Go back one week
-                dateToCheck = dateToCheck.minusWeeks(1);
-
-                LocalDate limit = LocalDate.of(2024, 6, 10);
-                if (dateToCheck.isBefore(limit)) {
-                    break;
-                }
-            }
-        }
-
-        // Update the status with the found status or default to "off" if no valid status was found
-        this.status = (statusToUpdate != null) ? statusToUpdate : "off";
-    }
 
 
 

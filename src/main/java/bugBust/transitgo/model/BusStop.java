@@ -3,6 +3,8 @@ package bugBust.transitgo.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class BusStop {
@@ -10,13 +12,18 @@ public class BusStop {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int stopID;
 
+    @NotNull(message="Bus Stop Name is required")
+    @NotBlank(message = "Bus Stop Name is required ")
     private String name;
 
     @ManyToOne
     @JoinColumn(name = "routeno")
     private BusRoute busroute;
 
+
     private int orderIndex;
+
+
 
     public int getOrderIndex() {
         return orderIndex;

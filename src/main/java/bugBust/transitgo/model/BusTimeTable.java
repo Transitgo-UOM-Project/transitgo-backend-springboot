@@ -1,7 +1,9 @@
-//BusTimeTable.java
 package bugBust.transitgo.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDate;
 
 @Entity
@@ -11,10 +13,18 @@ public class BusTimeTable {
     private int id;
 
     private int busId;
+
     private LocalDate date;
+
+    @NotNull(message="Status is required")
+    @NotBlank(message = "Status is required")
     private String status;
 
+    @NotNull(message="Journey Number is required")
+    private int journeyNumber;
+
     // Getters and setters
+
     public int getId() {
         return id;
     }
@@ -45,5 +55,13 @@ public class BusTimeTable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public int getJourneyNumber() {
+        return journeyNumber;
+    }
+
+    public void setJourneyNumber(int journeyNumber) {
+        this.journeyNumber = journeyNumber;
     }
 }

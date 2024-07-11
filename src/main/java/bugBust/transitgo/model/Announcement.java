@@ -25,12 +25,23 @@ public class Announcement {
     }
 
     private String createdBy;
+
+    private String createdByRole;
+
     @Column(name = "[user]")
     private String user;
 
     @PrePersist
     protected void onCreate() {
         createdAt = new Date(); // Current timestamp
+    }
+
+    public String getCreatedByRole() {
+        return createdByRole;
+    }
+
+    public void setCreatedByRole(String createdByRole) {
+        this.createdByRole = createdByRole;
     }
 
     // Getters and setters for createdAt field

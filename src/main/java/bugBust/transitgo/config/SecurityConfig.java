@@ -30,7 +30,7 @@ public class SecurityConfig {
             "/busstops",
             "/schedules",
             "/buses",
-            "/rates","/rates/*",
+            "/rates","/rates/*","/rate/*",
             "/announcements",
             "/forgot-password","/verify-otp","/new-password",
             "/losts","/founds"
@@ -51,7 +51,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         request -> request
                                 .requestMatchers(PERMIT_ALL).permitAll()
-                                .requestMatchers(GET,"/bus/*","/bussched/*","/bus/search","/bus/*/stops","/bus/*/bustimetable","busstop/*","/route/*/stops","/busroute/*").permitAll()
+                                .requestMatchers(GET,"/bus/*","/bussched/*","/bus/search","/bus/*/stops","/bus/*/bustimetable","busstop/*","/route/*/stops","/busroute/*" ,"/package/*").permitAll()
 
                         .requestMatchers("/admin/**").hasAnyAuthority("Roleadmin")
                         .requestMatchers(PUT,"/bus/*","/busStatus/*","/schedule/*","/busstop/*","/busroute/*","/busstoplocation/*").hasAnyAuthority("Roleadmin")
@@ -67,7 +67,7 @@ public class SecurityConfig {
                         .requestMatchers(POST,"/bus").hasAnyAuthority("Roleemployee","Roleadmin")
 
                         .requestMatchers(PUT,"/package/*").hasAnyAuthority("Roleemployee")
-                        .requestMatchers(GET,"/userBus/*").hasAnyAuthority("Roleemployee")
+                        .requestMatchers(GET,"/userBus/*","/userBus").hasAnyAuthority("Roleemployee")
 
                         .requestMatchers(POST,"/verifyPassword/*").hasAnyAuthority("Rolepassenger")
                         .requestMatchers(DELETE,"/deleteUser/*").hasAnyAuthority("Rolepassenger")
