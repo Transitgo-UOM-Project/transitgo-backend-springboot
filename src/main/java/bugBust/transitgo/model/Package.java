@@ -1,44 +1,41 @@
 package bugBust.transitgo.model;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
-
 import java.time.LocalDate;
-
-
+import java.util.Random;
 
 @Entity
 public class Package {
 
-    public Long getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(Long employeeId) {
-        this.employeeId = employeeId;
-    }
-
     @Id
-    @GeneratedValue
     private Long PackageID;
     private String BusID;
     private LocalDate ReceivedDate;
     private String Start;
     private String Destination;
+
     @NotNull(message="Receiver Name is required")
-    @Pattern(regexp = "^[a-zA-Z]+$",message = "Receiver name should contain only characters")
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "Receiver name should contain only characters")
     private String ReceiverName;
 
     @NotNull(message = "NIC is required")
-    @Pattern(regexp = "^[0-9]*V?$")
+    @Pattern(regexp = "^[0-9]*V?$", message = "NIC should contain only digits followed by optional 'V'")
     private String ReceiverNIC;
+
+    @NotNull(message = "Contact number is required")
+    @Pattern(regexp = "^[0-9]{9,10}$", message = "Phone number should be 9 or 10 digits")
+    private String ReceiverContact;
+
     private String employeeName;
     private String employeePhone;
     private Long employeeId;
+    private String createdBy;
+    private String Status;
 
     public String getEmployeeName() {
         return employeeName;
@@ -63,8 +60,6 @@ public class Package {
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
-
-    private String createdBy;
 
     public Long getPackageID() {
         return PackageID;
@@ -122,7 +117,6 @@ public class Package {
         ReceiverContact = receiverContact;
     }
 
-
     public String getStatus() {
         return Status;
     }
@@ -130,6 +124,7 @@ public class Package {
     public void setStatus(String status) {
         Status = status;
     }
+
     public LocalDate getReceivedDate() {
         return ReceivedDate;
     }
@@ -138,9 +133,13 @@ public class Package {
         ReceivedDate = receivedDate;
     }
 
-    @NotNull(message = "Contact number is required")
-    @Pattern(regexp = "^[0-9]{9,10}$",message = "Phone number should be 10 digits")
-    private String ReceiverContact;
+    @PrePersist
+    protected void onCreate() {
+        this.PackageID = generateRandomId();
+    }
 
-    private String Status;
+    private Long generateRandomId() {
+        Random random = new Random();
+        return 10000000L + random.nextInt(90000000); // Generate random Long between 10000000 and 99999999
+    }
 }

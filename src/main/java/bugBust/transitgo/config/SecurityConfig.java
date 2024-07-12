@@ -54,7 +54,7 @@ public class SecurityConfig {
                                 .requestMatchers(GET,"/bus/*","/bussched/*","/bus/search","/bus/*/stops","/bus/*/bustimetable","busstop/*","/route/*/stops","/busroute/*" ,"/package/*").permitAll()
 
                         .requestMatchers("/admin/**").hasAnyAuthority("Roleadmin")
-                        .requestMatchers(PUT,"/bus/*","/busStatus/*","/schedule/*","/busstop/*","/busroute/*","/busstoplocation/*").hasAnyAuthority("Roleadmin")
+                        .requestMatchers(PUT,"/bus/*","/busStatus/*","/schedule/*","/busstop/*","/busroute/*","/busstoplocation/*","bus/*/journeys").hasAnyAuthority("Roleadmin")
                         .requestMatchers(DELETE,"/bus/*","/busstop/*","/busroute/*","/busstoplocation/*","/package/*").hasAnyAuthority("Roleadmin")
 
 
