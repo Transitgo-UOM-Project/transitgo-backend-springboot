@@ -67,7 +67,7 @@ public class BusMgtController {
 
                     bus.setRegNo(newBus.getRegNo());
               bus.setBusroute(newBus.getBusroute());
-
+bus.setNoOfJourneysPerDay(newBus.getNoOfJourneysPerDay());
                     // Save and return the updated bus
                     return busmgtRepository.save(bus);
                 })

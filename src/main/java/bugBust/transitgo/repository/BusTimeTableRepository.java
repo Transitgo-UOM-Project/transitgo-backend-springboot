@@ -18,6 +18,8 @@ public interface BusTimeTableRepository extends CrudRepository<BusTimeTable, Int
     @Query("SELECT b.status FROM BusTimeTable b WHERE b.busId = :busId AND b.date = :date")
     List <String> findStatusByBusIdAndDate(int busId, LocalDate date);
 
+    void deleteByBusIdAndJourneyNumber(int busId, int journeyNumber);
+
 
 
 }
