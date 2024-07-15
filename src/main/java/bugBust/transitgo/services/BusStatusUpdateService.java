@@ -41,7 +41,7 @@ public class BusStatusUpdateService {
         LocalTime[] times = scheduleService.getJourneyStartAndEndTime(bus.getId(), direction);
 
         if (times == null) {
-            logger.info("No schedules found for bus {} in direction {}", bus.getId(), direction);
+          //logger.info("No schedules found for bus {} in direction {}", bus.getId(), direction);
             return;
         }
 
@@ -53,7 +53,7 @@ public class BusStatusUpdateService {
             bus.setStatus(direction);
         } else {
             if (isOutsideTimeRangeByMoreThan30Minutes(now, startTime, endTime)) {
-                logger.info("Bus {} is no longer within time range of 30 minutes from start and end time, setting status to 'off'", bus.getId());
+               logger.info("Bus {} is no longer within time range of 30 minutes from start and end time, setting status to 'off'", bus.getId());
                 bus.setStatus("off");
             }
             else {

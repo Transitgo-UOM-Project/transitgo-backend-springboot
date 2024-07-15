@@ -44,14 +44,14 @@ public class ScheduleService {
 
 
         if (schedules.isEmpty()) {
-            logger.info("empty as fuck");
+            //logger.info("empty schedules");
             return null;
         }
 
         LocalTime startTime = schedules.get(0).getDepartureTime();
         LocalTime endTime = schedules.get(schedules.size() - 1).getArrivalTime();
 
-        logger.info("bus {} of start time  - {} endtime {}", busId,startTime ,endTime);
+        //logger.info("bus {} of start time  - {} endtime {}", busId,startTime ,endTime);
         return new LocalTime[]{startTime, endTime};
     }
 
