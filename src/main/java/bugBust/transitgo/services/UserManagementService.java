@@ -172,7 +172,6 @@ public class UserManagementService {
         if (userOptional.isPresent()){
             User user = userOptional.get();
             Long id = user.getId();
-            activityLogRepository.deleteByUserId(id);
             userRepository.deleteById(id);
             return "User Deleted";
         }

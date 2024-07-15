@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 
 import javax.swing.text.html.Option;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -41,6 +42,11 @@ public class AuthenticationService {
     public AuthenticationResponse register(RegisterRequest request, HttpServletRequest httpServletRequest) throws EmailAlreadyExistException {
 
         if (repository.existsByEmail(request.getEmail())){
+            User existingUser = repository.findByEmail(request.getEmail()).orElseThrow();
+
+            if(!existingUser.isEnabled()){
+                throw new EmailAlreadyExistException("Email already registered but not verified. Please verify your email ");
+            }
             throw new EmailAlreadyExistException("Email already in use");
         }
 
@@ -78,6 +84,7 @@ public class AuthenticationService {
             String token = UUID.randomUUID().toString();
             user.setVerificationToken(token);
             user.setEnabled(false);
+            user.setOtpTimestamp(LocalDateTime.now());
             repository.save(user);
 
             String origin = httpServletRequest.getHeader("Origin");
@@ -88,7 +95,7 @@ public class AuthenticationService {
                 confirmationURL = "http://localhost:3000/verify-email?token=" + token;
             }
 
-            emailService.sendEmail(user.getEmail(),"TransitGo Account Verification", "Hi "+request.getUname()+" Click the link to verify your email : "+confirmationURL);
+            emailService.sendEmail(user.getEmail(),"TransitGo Account Verification", "Hi "+request.getUname()+" Click the link to verify your email : (Link expires in 24 hours) "+confirmationURL);
         }
 
         var jwtToken = jwtService.generateToken(user);
@@ -134,6 +141,7 @@ public class AuthenticationService {
         }
 
         user.setEnabled(true);
+        user.setOtpTimestamp(null);
         user.setVerificationToken(null);
         repository.save(user);
         return "valid";
