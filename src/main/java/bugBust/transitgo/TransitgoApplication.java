@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TransitgoApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(TransitgoApplication.class, args);
 	}
 

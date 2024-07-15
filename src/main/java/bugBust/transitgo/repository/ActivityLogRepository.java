@@ -15,6 +15,8 @@ public interface ActivityLogRepository extends JpaRepository<ActivityLog, Long> 
 
     void deleteByUserId(Long id);
 
+    void deleteAllByUserId(Long id);
+
    Optional<ActivityLog> findByActivityIdAndActivityType(Long activityId, String ActivityType);
 
 }

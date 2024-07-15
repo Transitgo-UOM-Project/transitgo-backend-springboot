@@ -27,6 +27,7 @@ public class SecurityConfig {
 
     private static final String[] PERMIT_ALL = {
             "/api/v1/auth/*",
+            "/verify-email",
             "/busstops",
             "/schedules",
             "/buses",
