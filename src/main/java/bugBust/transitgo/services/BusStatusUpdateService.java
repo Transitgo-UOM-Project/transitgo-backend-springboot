@@ -51,7 +51,7 @@ public class BusStatusUpdateService {
         if (isWithinTimeRange(now, startTime, endTime)) {
             logger.info("Setting status for bus {} to {}", bus.getId(), direction);
             bus.setStatus(direction);
-        } else {
+        } else if (bus.getStatus().equals(direction)) {
             if (isOutsideTimeRangeByMoreThan30Minutes(now, startTime, endTime)) {
                logger.info("Bus {} is no longer within time range of 30 minutes from start and end time, setting status to 'off'", bus.getId());
                 bus.setStatus("off");
