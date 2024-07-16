@@ -2,14 +2,18 @@
 package bugBust.transitgo.services;
 
 import bugBust.transitgo.model.BusMgt;
+import bugBust.transitgo.model.BusTimeTable;
 import bugBust.transitgo.repository.BusMgtRepository;
+import bugBust.transitgo.repository.BusTimeTableRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Service
 public class BusStatusUpdateService {
@@ -17,11 +21,15 @@ public class BusStatusUpdateService {
     private final BusMgtRepository busmgtRepository;
     private final ScheduleService scheduleService;
 
+    private final BusTimeTableRepository busTimeTableRepository;
+    private final BusMgtService busMgtService;
     private static final Logger logger = LoggerFactory.getLogger(BusStatusUpdateService.class);
 
-    public BusStatusUpdateService(BusMgtRepository busmgtRepository, ScheduleService scheduleService) {
+    public BusStatusUpdateService(BusMgtRepository busmgtRepository, ScheduleService scheduleService, BusTimeTableRepository busTimeTableRepository, BusMgtService busMgtService) {
         this.busmgtRepository = busmgtRepository;
         this.scheduleService = scheduleService;
+        this.busTimeTableRepository = busTimeTableRepository;
+        this.busMgtService = busMgtService;
     }
 
     @Scheduled(fixedRate = 15000)  // 15 seconds
@@ -30,12 +38,31 @@ public class BusStatusUpdateService {
         logger.info("Executing scheduled task to update bus statuses.");
         Iterable<BusMgt> allBuses = busmgtRepository.findAll();
         for (BusMgt bus : allBuses) {
+            if (bus.getNoOfJourneysPerDay() == 1)  {
+                updateSingleJourneyBusStatus(bus);
+            }
+            else{
             updateBusStatus(bus, "up");
             updateBusStatus(bus, "down");
             busmgtRepository.save(bus);
+        }}
+    }
+    private void updateSingleJourneyBusStatus(BusMgt bus) {
+        LocalDate today = LocalDate.now();
+        String statusUp = busMgtService.getStatusFromBusTimeTable(bus.getId(), today, "up");
+        String statusDown = busMgtService.getStatusFromBusTimeTable(bus.getId(), today, "down");
+
+        if (statusUp != null && statusDown != null) {
+            // Assuming you want to prioritize one over the other, or combine them in some way
+            bus.setStatus("off");
+        } else if (statusUp != null) {
+            bus.setStatus(statusUp);
+        } else if (statusDown != null) {
+            bus.setStatus(statusDown);
+        } else {
+            bus.setStatus("off");
         }
     }
-
     private void updateBusStatus(BusMgt bus, String direction) {
         LocalTime now = LocalTime.now();
         LocalTime[] times = scheduleService.getJourneyStartAndEndTime(bus.getId(), direction);

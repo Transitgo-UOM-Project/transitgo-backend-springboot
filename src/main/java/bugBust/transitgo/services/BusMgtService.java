@@ -78,7 +78,7 @@ public class BusMgtService {
         }
     }
 
-    private String getStatusFromBusTimeTable(int busid, LocalDate date, String direction) {
+    public String getStatusFromBusTimeTable(int busid, LocalDate date, String direction) {
         List<String> statuses = busTimeTableRepository.findStatusByBusIdAndDate(busid, date);
 
         if (statuses.isEmpty()) {
